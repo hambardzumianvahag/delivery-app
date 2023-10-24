@@ -20,7 +20,7 @@ const Verify = () => {
   };
   return (
     <div className={styles.main}>
-      <Link to="/">
+      <Link to="/delivery-app">
         <Button variant="outlined">Back</Button>
       </Link>
       <div className={styles.container}>
