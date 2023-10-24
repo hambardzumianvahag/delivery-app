@@ -40,7 +40,7 @@ const SignIn = () => {
           const userPosition = doc.data().position;
           if (userPosition === formData.position) {
             if (email === "admin@gmail.com") {
-              navigate("/admin");
+              navigate("/delivery-app/admin");
             } else {
               navigate(`/${userPosition.toLowerCase()}`);
             }

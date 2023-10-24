@@ -12,7 +12,7 @@ const Verify = () => {
     sendPasswordResetEmail(auth, email)
       .then((data) => {
 		alert('Check Your Email')
-        navigate("/");
+        navigate("/delivery-app");
       })
       .catch((error) => {
         alert('Something went wrong!');

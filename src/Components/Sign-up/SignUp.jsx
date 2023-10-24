@@ -118,7 +118,7 @@ const SignUp = () => {
         );
       }
 
-      navigate("/");
+      navigate("/delivery-app");
     } catch (error) {
       setError("Error creating user account:");
     }
