@@ -211,7 +211,7 @@ const SignUp = () => {
           <div>
             <p>
               Already have an account?{" "}
-              <Link className={styles.text} to="/">
+              <Link className={styles.text} to="/delivery-app">
                 Login
               </Link>
             </p>
