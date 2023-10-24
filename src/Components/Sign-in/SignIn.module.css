@@ -1,0 +1,45 @@
+.signin {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+.formContainer {
+  border: 1px solid rgb(196, 189, 189);
+  border-radius: 5px;
+  padding: 40px;
+  width: 350px;
+}
+.inputField {
+  width: 100%;
+  margin: 10px 0 !important;
+}
+.text {
+  color: #0471ea;
+  text-decoration: none;
+  cursor: pointer;
+}
+.div {
+  margin: 20px 0;
+  width: 100%;
+}
+.button {
+  width: 100%;
+}
+.title {
+  text-align: center;
+  margin: 0 0 30px 0;
+}
+.error{
+	text-align: center;
+	color: red;
+	margin: 10px 0;
+}
+@media (max-width: 768px) {
+  .formContainer {
+    width: 80%; /* Adjust the width as needed */
+  }
+  .inputField {
+    margin: 8px 0; /* Adjust the margin as needed */
+  }
+}

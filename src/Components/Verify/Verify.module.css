@@ -1,0 +1,40 @@
+.main{
+	width: 95%;
+	margin: 10px auto;
+	height: 100vh;
+}
+.container{
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+.forgot{
+	border: 1px solid rgb(196, 189, 189);
+	padding: 50px;
+	width: 350px;
+}
+.title{
+	margin: 0 0 50px 0;
+}
+.inputField {
+	width: 100%;
+	margin: 10px 0 !important;
+}
+.button{
+	width: 100%;
+}
+@media screen and (max-width: 768px) {
+	.forgot {
+	  width: 80%;
+	}
+  }
+  
+  @media screen and (max-width: 480px) {
+	.forgot {
+	  width: 95%;
+	  padding: 20px;
+	}
+	.title {
+	  font-size: 24px;
+	}
+  }
