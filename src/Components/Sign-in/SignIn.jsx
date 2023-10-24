@@ -42,7 +42,7 @@ const SignIn = () => {
             if (email === "admin@gmail.com") {
               navigate("/delivery-app/admin");
             } else {
-              navigate(`/${userPosition.toLowerCase()}`);
+              navigate(`/delivery-app/${userPosition.toLowerCase()}`);
             }
           } else {
             setError("Login Error! Try again.");
@@ -120,14 +120,14 @@ const SignIn = () => {
             </Button>
           </div>
           <div className={styles.div}>
-            <Link to='/verify' className={styles.text}>
+            <Link to="/delivery-app/verify" className={styles.text}>
               <p className={styles.text}>Forgot Password?</p>
             </Link>
           </div>
           <div>
             <p>
               Need an account?{" "}
-              <Link className={styles.text} to="/signup">
+              <Link className={styles.text} to="/delivery-app/signup">
                 Sign Up
               </Link>
             </p>
