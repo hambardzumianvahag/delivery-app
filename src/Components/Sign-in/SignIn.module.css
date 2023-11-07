@@ -1,10 +1,12 @@
 .signin {
+  background-color: #3b5998;
   display: flex;
   justify-content: center;
   align-items: center;
   height: 100vh;
 }
 .formContainer {
+  background-color: white;
   border: 1px solid rgb(196, 189, 189);
   border-radius: 5px;
   padding: 40px;

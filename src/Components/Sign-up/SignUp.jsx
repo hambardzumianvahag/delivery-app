@@ -1,18 +1,12 @@
-import {
-  Button,
-  FormControl,
-  InputLabel,
-  MenuItem,
-  Select,
-  TextField,
-} from "@mui/material";
+import { Button, FormControl, InputLabel, MenuItem, Select } from "@mui/material";
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import styles from "./SignUp.module.css";
 import { createUserWithEmailAndPassword } from "firebase/auth";
-import { auth } from "../../firebase/firebase-config"; // Assuming you have Firestore in your Firebase project
+import { auth } from "../../firebase/firebase-config";
 import { db } from "../../firebase/firebase-config";
 import { doc, setDoc } from "firebase/firestore";
+
 const SignUp = () => {
   const [formData, setFormData] = useState({
     name: "",
@@ -22,6 +16,7 @@ const SignUp = () => {
     confirmPassword: "",
     position: "",
   });
+  const [isChecked, setIsChecked] = useState(false);
 
   const [error, setError] = useState(null);
   const navigate = useNavigate();
@@ -53,6 +48,10 @@ const SignUp = () => {
     }
     if (!position) {
       setError("Select your position");
+      return false;
+    }
+    if (!isChecked) {
+      setError("Please Agree to the Terms & Conditions");
       return false;
     }
     setError(null);
@@ -130,9 +129,9 @@ const SignUp = () => {
         <h1 className={styles.title}>Sign Up</h1>
         <form onSubmit={handleSubmit}>
           {error && <div className={styles.error}>{error}</div>}
-          <div>
-            <label>Name</label> <br />
-            <TextField
+          <div className={styles.div}>
+            <label>Name</label>
+            <input
               className={styles.inputField}
               type="text"
               name="name"
@@ -141,9 +140,9 @@ const SignUp = () => {
               onChange={handleInputChange}
             />
           </div>
-          <div>
-            <label>Surname</label> <br />
-            <TextField
+          <div className={styles.div}>
+            <label>Surname</label>
+            <input
               className={styles.inputField}
               type="text"
               name="surname"
@@ -152,9 +151,9 @@ const SignUp = () => {
               onChange={handleInputChange}
             />
           </div>
-          <div>
-            <label>Email</label> <br />
-            <TextField
+          <div className={styles.div}>
+            <label>Email</label>
+            <input
               className={styles.inputField}
               type="email"
               name="email"
@@ -163,32 +162,47 @@ const SignUp = () => {
               onChange={handleInputChange}
             />
           </div>
-          <div>
-            <label>Password</label> <br />
-            <TextField
+          <div className={styles.div}>
+            <label>Password</label>
+            <input
               className={styles.inputField}
               type="password"
               name="password"
-              autoComplete="new-password" // Suggested for password fields
+              autoComplete="new-password"
               value={formData.password || ""}
               onChange={handleInputChange}
             />
           </div>
-          <div>
-            <label>Confirm Password</label> <br />
-            <TextField
+          <div className={styles.div}>
+            <label>Confirm Password</label>
+            <input
               className={styles.inputField}
               name="confirmPassword"
               type="password"
-              autoComplete="new-password" // Suggested for password fields
+              autoComplete="new-password"
               value={formData.confirmPassword || ""}
               onChange={handleInputChange}
             />
           </div>
-          <div className={styles.div}>
+          {/* <div className={styles.div}>
+            <label>Choose your position</label>
+            <select
+              value={formData.position}
+              onChange={handleInputChange}
+              className={styles.select}
+              name="position"
+            >
+              <option disabled value="">
+                Select position
+              </option>
+              <option value="User">User</option>
+              <option value="Courier">Courier</option>
+            </select>
+          </div> */}
+            <div className={styles.selectDiv}>
             <FormControl fullWidth>
               <InputLabel id="demo-simple-select-label">
-                Choose your position
+                Select your position
               </InputLabel>
               <Select
                 labelId="demo-simple-select-label"
@@ -203,12 +217,25 @@ const SignUp = () => {
               </Select>
             </FormControl>
           </div>
-          <div className={styles.div}>
+          <div className={styles.termsDiv}>
+            <input
+              checked={isChecked}
+              onChange={() => setIsChecked(!isChecked)}
+              type="checkbox"
+            />{" "}
+            <span
+              className={styles.terms}
+              onClick={() => setIsChecked(!isChecked)}
+            >
+              I Agree to the Terms & Conditions
+            </span>
+          </div>
+          <div className={styles.buttonDiv}>
             <Button type="submit" className={styles.button} variant="contained">
               Sign Up
             </Button>
           </div>
-          <div>
+          <div className={styles.termsDiv}>
             <p>
               Already have an account?{" "}
               <Link className={styles.text} to="/delivery-app">
