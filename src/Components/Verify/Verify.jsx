@@ -10,12 +10,12 @@ const Verify = () => {
     e.preventDefault();
     const email = e.target.email.value;
     sendPasswordResetEmail(auth, email)
-      .then((data) => {
-		alert('Check Your Email')
+      .then(() => {
+        alert("Check Your Email");
         navigate("/delivery-app");
       })
       .catch((error) => {
-        alert('Something went wrong!');
+        alert("Something went wrong!");
       });
   };
   return (

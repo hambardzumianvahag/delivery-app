@@ -5,7 +5,8 @@ import styles from "./SignUp.module.css";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { auth } from "../../firebase/firebase-config";
 import { db } from "../../firebase/firebase-config";
-import { doc, setDoc } from "firebase/firestore";
+import { doc,
+   setDoc } from "firebase/firestore";
 
 const SignUp = () => {
   const [formData, setFormData] = useState({
