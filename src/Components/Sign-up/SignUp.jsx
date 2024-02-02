@@ -1,12 +1,17 @@
-import { Button, FormControl, InputLabel, MenuItem, Select } from "@mui/material";
+import {
+  Button,
+  FormControl,
+  InputLabel,
+  MenuItem,
+  Select,
+} from "@mui/material";
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import styles from "./SignUp.module.css";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { auth } from "../../firebase/firebase-config";
 import { db } from "../../firebase/firebase-config";
-import { doc,
-   setDoc } from "firebase/firestore";
+import { doc, setDoc } from "firebase/firestore";
 
 const SignUp = () => {
   const [formData, setFormData] = useState({
@@ -185,22 +190,7 @@ const SignUp = () => {
               onChange={handleInputChange}
             />
           </div>
-          {/* <div className={styles.div}>
-            <label>Choose your position</label>
-            <select
-              value={formData.position}
-              onChange={handleInputChange}
-              className={styles.select}
-              name="position"
-            >
-              <option disabled value="">
-                Select position
-              </option>
-              <option value="User">User</option>
-              <option value="Courier">Courier</option>
-            </select>
-          </div> */}
-            <div className={styles.selectDiv}>
+          <div className={styles.selectDiv}>
             <FormControl fullWidth>
               <InputLabel id="demo-simple-select-label">
                 Select your position
