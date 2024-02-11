@@ -1,5 +1,5 @@
 import React from "react";
-import UserMain from "../UserMain/UserMain";
+import UserMain from "../UserSide/UserMain/UserMain";
 import CourierMain from "../CourierMain/CourierMain";
 
 const Admin = () => {

@@ -83,6 +83,7 @@ const SignUp = () => {
         surname: surname,
         position: position,
         email: email,
+        id: userId,
       });
     } catch (error) {
       console.error("Error storing user position in Firestore:", error);

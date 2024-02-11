@@ -39,10 +39,11 @@ const SignIn = () => {
         querySnapshot.forEach((doc) => {
           const userPosition = doc.data().position;
           if (userPosition === formData.position) {
+            const userId = doc.id; // Assuming userID is stored as document ID in Firestore
             if (email === "admin@gmail.com") {
               navigate("/delivery-app/admin");
             } else {
-              navigate(`/delivery-app/${userPosition.toLowerCase()}`);
+              navigate(`/delivery-app/user/${userId}`); // Navigate to /user/userID
             }
           } else {
             setError("Login Error! Try again.");
