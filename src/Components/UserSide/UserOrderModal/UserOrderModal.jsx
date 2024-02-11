@@ -2,7 +2,16 @@ import { Button, Modal, TextField } from "@mui/material";
 import React, { useState, useEffect } from "react";
 import styles from "./UserOrderModal.module.css";
 import { db } from "../../../firebase/firebase-config";
-import { addDoc, collection, getDocs } from "@firebase/firestore";
+import {
+  addDoc,
+  arrayUnion,
+  collection,
+  doc,
+  getDoc,
+  getDocs,
+  updateDoc,
+} from "@firebase/firestore";
+import { useLocation } from "react-router";
 
 const UserOrderModal = ({ isOpen, onClose }) => {
   const [orderData, setOrderData] = useState({
@@ -12,6 +21,9 @@ const UserOrderModal = ({ isOpen, onClose }) => {
     to: "",
     additionalInfo: "",
   });
+  const location = useLocation();
+  const locationPath = location.pathname.split("/");
+  const userId = locationPath[locationPath.length - 1];
 
   useEffect(() => {
     const fetchOrdersCount = async () => {
@@ -39,6 +51,15 @@ const UserOrderModal = ({ isOpen, onClose }) => {
   const handleConfirmOrder = async () => {
     try {
       await addDoc(collection(db, "orders"), orderData);
+      const userDocRef = doc(db, "users", userId);
+      const userDocSnap = await getDoc(userDocRef);
+      if (userDocSnap.exists()) {
+        const userData = userDocSnap.data();
+        const updatedOrders = [...(userData.orders || []), orderData];
+        await updateDoc(userDocRef, { orders: updatedOrders });
+      } else {
+        console.error("User document does not exist");
+      }
       onClose();
       const ordersRef = collection(db, "orders");
       const ordersSnapshot = await getDocs(ordersRef);
