@@ -1,5 +1,53 @@
-.orderBtn {
-  margin: 20px !important;
-  font-size: 17px !important;
-  padding: 20px !important;
+.userContent {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 95%;
+  margin: 0 auto;
+}
+
+.userContent img {
+  max-width: 100%;
+  height: auto;
+}
+
+.userContentText h1 {
+  font-size: 40px;
+  margin: 20px 0;
+}
+
+.userContentText p {
+  font-size: 17px;
+  margin: 15px 0;
+  color: gray;
+}
+
+.userContentText button {
+  background-color: #fdc72d;
+  color: black;
+  margin: 15px 0 80px 0;
+  font-size: 17px;
+  font-weight: 600;
+  border: none;
+  padding: 15px 30px;
+  cursor: pointer;
+  border-radius: 15px;
+}
+
+.userContentText button:hover {
+  background-color: #9b7b25;
+  color: white;
+}
+
+@media (max-width: 970px) {
+  .userContent {
+    flex-direction: column;
+    margin-top: 50px;
+  }
+  .userContent img {
+    width: 100%;
+  }
+  .userContentText button {
+    margin-bottom: 20px;
+  }
 }

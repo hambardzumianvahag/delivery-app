@@ -10,9 +10,9 @@ import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import styles from "./SignIn.module.css";
 import { signInWithEmailAndPassword } from "firebase/auth";
-import { auth } from "../../firebase/firebase-config";
+import { auth } from "../../../../firebase/firebase-config";
 import { collection, query, where, getDocs } from "firebase/firestore";
-import { db } from "../../firebase/firebase-config";
+import { db } from "../../../../firebase/firebase-config";
 
 const SignIn = () => {
   const [formData, setFormData] = useState({

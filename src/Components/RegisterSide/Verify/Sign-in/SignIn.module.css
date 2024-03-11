@@ -3,7 +3,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 100vh;
+  min-height: 100vh;
 }
 .formContainer {
   background-color: white;
@@ -32,14 +32,15 @@
   text-align: center;
   margin: 0 0 30px 0;
 }
-.error{
-	text-align: center;
-	color: red;
-	margin: 10px 0;
+.error {
+  text-align: center;
+  color: red;
+  margin: 10px 0;
 }
 @media (max-width: 768px) {
   .formContainer {
     width: 80%; /* Adjust the width as needed */
+    margin: 10px 0;
   }
   .inputField {
     margin: 8px 0; /* Adjust the margin as needed */

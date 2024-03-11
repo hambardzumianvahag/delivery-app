@@ -1,0 +1,93 @@
+.modalContainer {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 90%; /* Adjusted width for better responsiveness */
+  max-width: 800px; /* Increased max-width for larger screens */
+  padding: 20px;
+  border-radius: 8px;
+}
+
+.modalContent {
+  background-color: white;
+  padding: 20px;
+  border-radius: 8px;
+  position: relative;
+}
+
+.title {
+  text-align: center;
+  margin: 5px 0;
+}
+
+.close {
+  position: absolute;
+  right: 10px;
+  top: 5px;
+  cursor: pointer;
+  font-size: 20px;
+}
+
+.close:hover {
+  color: red;
+}
+
+.table {
+  width: 100%; /* Table takes full width */
+  border-collapse: collapse;
+  margin-top: 20px;
+  table-layout: fixed; /* Let the table adjust based on available width */
+}
+
+.headerCell {
+  background-color: #f2f2f2;
+  font-weight: bold;
+  padding: 10px;
+  white-space: nowrap; /* Prevent text wrapping */
+  overflow: hidden; /* Hide overflow if needed */
+  text-overflow: ellipsis; /* Add ellipsis for long text */
+}
+
+.table td,
+.table th {
+  border: 1px solid #dddddd;
+  text-align: left;
+  padding: 8px;
+}
+
+.table tr:nth-child(even) {
+  background-color: #f2f2f2;
+}
+
+.table tr:hover {
+  background-color: #ddd;
+}
+
+.tableWrapper {
+  max-height: 400px; /* Change height to max-height for better responsiveness */
+  overflow-y: auto; /* Enable vertical scrolling */
+}
+
+.cancelOrder {
+  background-color: red;
+  color: white;
+  padding: 5px 12px;
+  border: none;
+  cursor: pointer;
+  font-size: 16px;
+  display: flex;
+  margin: 0 auto;
+}
+
+.cancelOrder:hover {
+  background-color: rgb(146, 27, 27);
+}
+
+/* Adjustments for smaller screens */
+@media screen and (max-width: 600px) {
+  .modalContainer {
+    width: 95%; /* Adjusted width for smaller screens */
+    max-width: 95%; /* Adjusted max-width for smaller screens */
+  }
+}

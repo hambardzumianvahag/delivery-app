@@ -9,8 +9,8 @@ import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import styles from "./SignUp.module.css";
 import { createUserWithEmailAndPassword } from "firebase/auth";
-import { auth } from "../../firebase/firebase-config";
-import { db } from "../../firebase/firebase-config";
+import { auth } from "../../../../firebase/firebase-config";
+import { db } from "../../../../firebase/firebase-config";
 import { doc, setDoc } from "firebase/firestore";
 
 const SignUp = () => {
@@ -18,6 +18,9 @@ const SignUp = () => {
     name: "",
     surname: "",
     email: "",
+    // phoneNumber: "",
+    // birthDate: "",
+    // mainAddress: "",
     password: "",
     confirmPassword: "",
     position: "",
@@ -73,6 +76,9 @@ const SignUp = () => {
     userId,
     name,
     surname,
+    // phoneNumber,
+    // birthDate,
+    // mainAddress,
     email,
     position
   ) => {
@@ -82,6 +88,9 @@ const SignUp = () => {
         name: name,
         surname: surname,
         position: position,
+        // phoneNumber: phoneNumber,
+        // birthDate: birthDate,
+        // mainAddress: mainAddress,
         email: email,
         id: userId,
       });
@@ -108,6 +117,9 @@ const SignUp = () => {
         name: "",
         surname: "",
         email: "",
+        // phoneNumber: "",
+        // birthDate: "",
+        // mainAddress: "",
         password: "",
         confirmPassword: "",
         position: "",
@@ -120,6 +132,9 @@ const SignUp = () => {
           formData.name,
           formData.surname,
           formData.email,
+          // formData.phoneNumber,
+          // formData.birthDate,
+          // formData.mainAddress,
           position
         );
       }
@@ -191,36 +206,38 @@ const SignUp = () => {
               onChange={handleInputChange}
             />
           </div>
-          <div className={styles.selectDiv}>
-            <FormControl fullWidth>
-              <InputLabel id="demo-simple-select-label">
-                Select your position
-              </InputLabel>
-              <Select
-                labelId="demo-simple-select-label"
-                id="demo-simple-select"
-                label="Choose your position"
-                value={formData.position || ""}
-                name="position"
-                onChange={handleInputChange}
+          <div className={styles.bottomContainer}>
+            <div className={styles.termsDiv}>
+              <input
+                checked={isChecked}
+                onChange={() => setIsChecked(!isChecked)}
+                type="checkbox"
+              />{" "}
+              <span
+                className={styles.terms}
+                onClick={() => setIsChecked(!isChecked)}
               >
-                <MenuItem value="User">User</MenuItem>
-                <MenuItem value="Courier">Courier</MenuItem>
-              </Select>
-            </FormControl>
-          </div>
-          <div className={styles.termsDiv}>
-            <input
-              checked={isChecked}
-              onChange={() => setIsChecked(!isChecked)}
-              type="checkbox"
-            />{" "}
-            <span
-              className={styles.terms}
-              onClick={() => setIsChecked(!isChecked)}
-            >
-              I Agree to the Terms & Conditions
-            </span>
+                I Agree to the Terms & Conditions
+              </span>
+            </div>
+            <div className={styles.selectDiv}>
+              <FormControl fullWidth>
+                <InputLabel id="demo-simple-select-label">
+                  Select your position
+                </InputLabel>
+                <Select
+                  labelId="demo-simple-select-label"
+                  id="demo-simple-select"
+                  label="Choose your position"
+                  value={formData.position || ""}
+                  name="position"
+                  onChange={handleInputChange}
+                >
+                  <MenuItem value="User">User</MenuItem>
+                  <MenuItem value="Courier">Courier</MenuItem>
+                </Select>
+              </FormControl>
+            </div>
           </div>
           <div className={styles.buttonDiv}>
             <Button type="submit" className={styles.button} variant="contained">

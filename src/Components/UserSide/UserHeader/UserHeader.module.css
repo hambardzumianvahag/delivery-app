@@ -1,7 +1,11 @@
 .userHeader {
-  background-color: #3b5998;
-  color: white;
-  padding: 10px 0; /* Add padding for better spacing */
+  background-color: white;
+  color: black;
+  padding: 10px 0px;
+  position: fixed;
+  top: 0;
+  width: 100%;
+  z-index: 1000;
 }
 .headerContainer {
   width: 90%;
@@ -29,14 +33,20 @@
   display: inline-block;
   margin: 0 10px;
 }
+.burgerMenu {
+  display: none !important;
+}
 @media screen and (max-width: 768px) {
   .userHeader ul {
-    display: block;
     text-align: left;
   }
-
+  .burgerMenu {
+    display: block !important;
+  }
+  .menuList {
+    display: none !important;
+  }
   .userHeader ul li {
-    display: block;
     margin: 10px 0;
   }
 }

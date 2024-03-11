@@ -1,13 +1,14 @@
 import { Route, Routes } from "react-router";
 import "./App.css";
-import SignIn from "./Components/Sign-in/SignIn";
-import SignUp from "./Components/Sign-up/SignUp";
 import UserMain from './Components/UserSide/UserMain/UserMain'
-import CourierMain from "./Components/CourierMain/CourierMain";
+import CourierMain from "./Components/CourierSide/CourierMain/CourierMain";
 import Admin from "./Components/Admin/Admin";
-import Verify from "./Components/Verify/Verify";
+
 import { useState } from "react";
 import { UserContext } from "./Context/UserContext";
+import SignIn from "./Components/RegisterSide/Verify/Sign-in/SignIn";
+import SignUp from "./Components/RegisterSide/Verify/Sign-up/SignUp";
+import Verify from "./Components/RegisterSide/Verify/Verify/Verify";
 
 function App() {
   const [user, setUser] = useState({ name: '', surname: '', email: '' });

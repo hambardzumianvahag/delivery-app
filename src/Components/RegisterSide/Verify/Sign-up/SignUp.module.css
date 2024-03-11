@@ -3,7 +3,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 100vh;
+  min-height: 100vh;
 }
 .formContainer {
   border: 1px solid rgb(196, 189, 189);
@@ -45,18 +45,17 @@
 }
 .termsDiv {
   display: flex;
-  justify-content: left;
+  justify-content: center;
   align-items: center;
   padding: 5px;
   gap: 10px;
 }
 .selectDiv {
-  float: right;
   display: flex;
-  justify-content: flex-end;
   align-items: center;
   width: 50%;
   padding: 5px 0;
+  margin-right: -7px;
 }
 .button {
   width: 100%;
@@ -73,10 +72,17 @@
 .terms {
   cursor: pointer;
 }
+.bottomContainer {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  align-items: center;
+}
 
 @media (max-width: 768px) {
   .formContainer {
     width: 80%;
+    margin: 10px 0;
   }
   .inputField {
     margin: 8px 0;

@@ -4,10 +4,14 @@ import { useParams } from "react-router";
 import { collection, getDocs, query, where } from "@firebase/firestore";
 import { db } from "../../../firebase/firebase-config";
 import UserContent from "../UserContent/UserContent";
+import UserAbout from "../UserAbout/UserAbout";
+import UserContact from "../UserContact/UserContact";
+import UserFooter from "../UserFooter/UserFooter";
 
 const UserMain = () => {
   const { userID } = useParams();
   const [userData, setUserData] = useState(null);
+
   useEffect(() => {
     const fetchUserData = async () => {
       try {
@@ -31,8 +35,11 @@ const UserMain = () => {
 
   return (
     <div>
-      <UserHeader userData={userData} />
-      <UserContent />
+      <UserHeader userData={userData} setUserData={setUserData} />
+      <UserContent setUserData={setUserData} />
+      <UserAbout />
+      <UserContact />
+      <UserFooter />
     </div>
   );
 };

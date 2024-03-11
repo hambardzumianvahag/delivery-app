@@ -1,0 +1,76 @@
+.userContact {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  width: 90%;
+  margin: 10px auto;
+  justify-content: space-between;
+}
+
+.userContact h1 {
+  font-size: 40px;
+  margin-bottom: 20px;
+}
+
+.userContact p {
+  font-size: 17px;
+  margin-bottom: 30px;
+  color: gray;
+}
+
+.userContactText {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  gap: 150px;
+  padding: 0 50px;
+  margin: 50px 0;
+}
+
+.userContactText div {
+  flex: 1;
+}
+
+.userContactText div:last-child {
+  flex: 0 0 auto;
+}
+
+.userContactText p {
+  margin-bottom: 15px;
+}
+
+.userContactText strong {
+  font-weight: bold;
+}
+
+.userContactText span {
+  color: #333;
+}
+
+.userContactText button {
+  background-color: #fdc72d;
+  color: black;
+  font-size: 17px;
+  font-weight: 600;
+  border: none;
+  padding: 15px 30px;
+  cursor: pointer;
+  border-radius: 15px;
+}
+
+.userContactText button:hover {
+  background-color: #9b7b25;
+  color: white;
+}
+
+@media (min-width: 768px) {
+  .userContact {
+    flex-direction: row;
+    align-items: flex-start;
+    padding: 50px 0;
+  }
+  .userContactText {
+    flex-direction: row;
+  }
+}
