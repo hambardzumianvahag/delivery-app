@@ -1,64 +1,72 @@
 .modalContent {
-	position: fixed;
-	top: 50%;
-	left: 50%;
-	transform: translate(-50%, -50%);
-	background-color: #ffffff;
-	padding: 20px;
-	border-radius: 8px;
-	width: 90%; /* Adjusted width for small screens */
-	max-width: 400px; /* Maximum width for small screens */
-  }
-  
-  .header {
-	display: flex;
-	justify-content: center;
-  }
-  
-  .modalBody {
-	padding: 10px; /* Reduced padding */
-	font-size: 16px; /* Slightly reduced font size */
-  }
-  
-  .orderContainer {
-	margin: 8px 0; /* Reduced margin */
-  }
-  .textField {
-	width: 100%;
-  }
-  
-  .additionalInfoContainer {
-	margin-top: 15px; /* Reduced margin */
-  }
-  
-  .textArea {
-	width: calc(100% - 10px); /* Adjusted width */
-	max-width: calc(100% - 10px); /* Adjusted max width */
-	height: 80px; /* Reduced height */
-  }
-  
-  .buttonContainer {
-	margin-top: 15px; /* Reduced margin */
-	display: flex;
-	flex-wrap: wrap; /* Allow buttons to wrap */
-	justify-content: space-between;
-  }
-  
-  .cancelButton,
-  .confirmButton {
-	width: 48%;
-	margin-top: 10px; /* Adjusted margin */
-  }
-  .cancelButton {
-	background-color: red !important;
-  }
-  .confirmButton {
-	background-color: #fdc72d !important;
-  }
-  .error {
-	display: flex;
-	color: red;
-	justify-content: center;
-	font-weight: bold;
-  }
-  
+  position: fixed;
+  top: -5%;
+  transform: translate(-50%, -50%);
+  background-color: #ffffff;
+  padding: 10px;
+  border-radius: 8px;
+  width: 90%;
+  max-width: 400px;
+}
+
+.header {
+  display: flex;
+  justify-content: center;
+}
+
+.modalBody {
+  font-size: 16px;
+}
+
+.textField {
+  width: 100%;
+}
+
+.additionalInfoContainer {
+  margin-top: 5px;
+}
+
+.textArea {
+  width: calc(100% - 10px);
+  max-width: calc(100% - 10px);
+  height: 60px;
+}
+
+.buttonContainer {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  width: 100%;
+}
+.distance {
+  margin: 5px 0;
+}
+
+.orderSummary {
+  padding: 0 5px;
+  font-size: 16px;
+}
+.summaryTitle {
+  text-align: center;
+  font-weight: bolder;
+  margin-top: 5px;
+  font-size: 20px;
+}
+.total {
+  font-weight: bold;
+}
+.cancelButton,
+.confirmButton {
+  width: 100%;
+}
+.cancelButton {
+  background-color: red !important;
+}
+.confirmButton {
+  background-color: #fdc72d !important;
+}
+.error {
+  display: flex;
+  color: red;
+  font-weight: bold;
+}

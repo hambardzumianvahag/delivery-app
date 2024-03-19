@@ -77,20 +77,18 @@ const UserOrderHistory = ({ userData, isOpen, onClose, setUserData }) => {
               <Table className={styles.table}>
                 <TableHead>
                   <TableRow>
-                    <TableCell className={styles.headerCell}>
-                      Order ID
-                    </TableCell>
-                    <TableCell className={styles.headerCell}>
-                      Order Name
-                    </TableCell>
+                    <TableCell className={styles.headerCell}>ID</TableCell>
+                    <TableCell className={styles.headerCell}>Name</TableCell>
                     <TableCell className={styles.headerCell}>From</TableCell>
                     <TableCell className={styles.headerCell}>To</TableCell>
                     <TableCell className={styles.headerCell}>
+                      Distance
+                    </TableCell>
+                    <TableCell className={styles.headerCell}>Total</TableCell>
+                    <TableCell className={styles.headerCell}>
                       Additional Info
                     </TableCell>
-                    <TableCell className={styles.headerCell}>
-                      Order Status
-                    </TableCell>
+                    <TableCell className={styles.headerCell}>Status</TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
@@ -100,7 +98,10 @@ const UserOrderHistory = ({ userData, isOpen, onClose, setUserData }) => {
                       <TableCell>{order.orderName}</TableCell>
                       <TableCell>{order.from}</TableCell>
                       <TableCell>{order.to}</TableCell>
+                      <TableCell>{order.distance}</TableCell>
+                      <TableCell>{order.total}</TableCell>
                       <TableCell>{order.additionalInfo}</TableCell>
+
                       <TableCell>
                         {order.status === "Pending" ? (
                           <button
@@ -110,7 +111,7 @@ const UserOrderHistory = ({ userData, isOpen, onClose, setUserData }) => {
                             Cancel
                           </button>
                         ) : (
-                          <span>{order.status}</span>
+                          <span className={styles.status}>{order.status}</span>
                         )}
                       </TableCell>
                     </TableRow>

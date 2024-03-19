@@ -1,18 +1,20 @@
 import {
   Button,
   FormControl,
+  IconButton,
+  Input,
+  InputAdornment,
   InputLabel,
   MenuItem,
   Select,
-  TextField,
 } from "@mui/material";
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import styles from "./SignIn.module.css";
 import { signInWithEmailAndPassword } from "firebase/auth";
-import { auth } from "../../../../firebase/firebase-config";
 import { collection, query, where, getDocs } from "firebase/firestore";
-import { db } from "../../../../firebase/firebase-config";
+import { auth, db } from "../../../firebase/firebase-config";
+import { Visibility, VisibilityOff } from "@mui/icons-material";
 
 const SignIn = () => {
   const [formData, setFormData] = useState({
@@ -22,6 +24,12 @@ const SignIn = () => {
   });
 
   const [error, setError] = useState(null);
+  const [showPassword, setShowPassword] = React.useState(false);
+  const handleClickShowPassword = () => setShowPassword((show) => !show);
+  const handleMouseDownPassword = (event) => {
+    event.preventDefault();
+  };
+
   const navigate = useNavigate();
 
   const handleInputChange = (e) => {
@@ -62,8 +70,18 @@ const SignIn = () => {
     const { email, password } = formData;
 
     try {
-      await signInWithEmailAndPassword(auth, email, password);
-      fetchUserPosition(email);
+      await signInWithEmailAndPassword(auth, email, password).then(
+        (userCredentials) => {
+          if (!userCredentials.user.emailVerified) {
+            setError(
+              "Please verify the email. We have sent an email verification to you"
+            );
+          } else {
+            setError("");
+            fetchUserPosition(email);
+          }
+        }
+      );
     } catch (error) {
       setError("Login Error! Try again.");
     }
@@ -76,8 +94,8 @@ const SignIn = () => {
         <form onSubmit={handleSubmit}>
           {error && <div className={styles.error}>{error}</div>}
           <div>
-            <label>Email</label> <br />
-            <TextField
+            <Input
+              placeholder="Email"
               className={styles.inputField}
               type="email"
               name="email"
@@ -87,14 +105,26 @@ const SignIn = () => {
             />
           </div>
           <div>
-            <label>Password</label> <br />
-            <TextField
+            <Input
+              placeholder="Password"
               className={styles.inputField}
-              type="password"
               autoComplete="password"
-              name="password"
               value={formData.password || ""}
               onChange={handleInputChange}
+              name="password"
+              id="standard-adornment-password"
+              type={showPassword ? "text" : "password"}
+              endAdornment={
+                <InputAdornment position="end">
+                  <IconButton
+                    aria-label="toggle password visibility"
+                    onClick={handleClickShowPassword}
+                    onMouseDown={handleMouseDownPassword}
+                  >
+                    {showPassword ? <VisibilityOff /> : <Visibility />}
+                  </IconButton>
+                </InputAdornment>
+              }
             />
           </div>
           <div className={styles.div}>

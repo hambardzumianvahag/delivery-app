@@ -83,7 +83,16 @@
 .cancelOrder:hover {
   background-color: rgb(146, 27, 27);
 }
-
+.headerCell {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.status {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
 /* Adjustments for smaller screens */
 @media screen and (max-width: 600px) {
   .modalContainer {

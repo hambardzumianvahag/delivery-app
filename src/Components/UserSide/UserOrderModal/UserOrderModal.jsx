@@ -1,6 +1,18 @@
-import { Button, Modal, TextField } from "@mui/material";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import styles from "./UserOrderModal.module.css";
+import {
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalBody,
+  ModalFooter,
+  Button,
+  Textarea,
+  Input,
+  Text,
+  SkeletonText,
+} from "@chakra-ui/react";
 import { db } from "../../../firebase/firebase-config";
 import {
   addDoc,
@@ -11,6 +23,9 @@ import {
   updateDoc,
 } from "@firebase/firestore";
 import { useLocation } from "react-router";
+import { Autocomplete, useJsApiLoader } from "@react-google-maps/api";
+
+const libraries = ["places"];
 
 const UserOrderModal = ({ isOpen, onClose, setUserData }) => {
   const [orderData, setOrderData] = useState({
@@ -20,11 +35,25 @@ const UserOrderModal = ({ isOpen, onClose, setUserData }) => {
     to: "",
     additionalInfo: "",
     status: "Pending",
+    distance: "",
+    duration: "",
+    total: "",
   });
   const [error, setError] = useState("");
   const location = useLocation();
   const locationPath = location.pathname.split("/");
   const userId = locationPath[locationPath.length - 1];
+
+  const { isLoaded } = useJsApiLoader({
+    googleMapsApiKey: "AIzaSyAPHw8Db5Ux9sMohE1FBZZmntxl_cdCDOQ",
+    libraries: libraries,
+  });
+  const [distance, setDistance] = useState("");
+  const [duration, setDuration] = useState("");
+  /** @type React.MutableRefObject<HTMLInputElement> */
+  const originRef = useRef();
+  /** @type React.MutableRefObject<HTMLInputElement> */
+  const destinationRef = useRef();
 
   useEffect(() => {
     const fetchOrdersCount = async () => {
@@ -35,11 +64,44 @@ const UserOrderModal = ({ isOpen, onClose, setUserData }) => {
         const orderId = `#${String(count + 1).padStart(4, "0")}`;
         setOrderData((prevData) => ({ ...prevData, orderId }));
       } catch (error) {
+        console.log(isLoaded);
         console.error("Error fetching orders count: ", error);
       }
     };
+    if (orderData.from && orderData.to) {
+      calculateRoute();
+    }
     fetchOrdersCount();
-  }, []);
+  }, [isLoaded, orderData.from, orderData.to]);
+
+  if (!isLoaded) {
+    return <SkeletonText />;
+  }
+
+  async function calculateRoute() {
+    if (originRef.current.value === "" || destinationRef.current.value === "") {
+      return;
+    }
+    // eslint-disable-next-line no-undef
+    const directionsService = new google.maps.DirectionsService();
+    const results = await directionsService.route({
+      origin: originRef.current.value,
+      destination: destinationRef.current.value,
+      // eslint-disable-next-line no-undef
+      travelMode: google.maps.TravelMode.DRIVING,
+    });
+    const calculatedDistance = results.routes[0].legs[0].distance.text;
+    const calculatedDuration = results.routes[0].legs[0].duration.text;
+    const total = 300 + parseFloat(calculatedDistance.slice(0, 3)) * 100;
+    setDistance(calculatedDistance);
+    setDuration(calculatedDuration);
+    setOrderData((prevData) => ({
+      ...prevData,
+      distance: calculatedDistance,
+      duration: calculatedDuration,
+      total: `${total} AMD`,
+    }));
+  }
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -111,6 +173,9 @@ const UserOrderModal = ({ isOpen, onClose, setUserData }) => {
         to: "",
         additionalInfo: "",
         orderId,
+        distance: "",
+        duration: "",
+        total: "",
         status: "Pending",
       });
     } catch (error) {
@@ -119,67 +184,90 @@ const UserOrderModal = ({ isOpen, onClose, setUserData }) => {
   };
 
   return (
-    <Modal open={isOpen} onClose={onClose}>
-      <div className={styles.modalContent}>
-        <div className={styles.modalBody}>
-          <h2 className={styles.header}>Order Number {orderData.orderId}</h2>
-          {error && <span className={styles.error}>{error}</span>}
-          <div className={styles.orderContainer}>
-            <p>Order Name: </p>
-            <TextField
-              name="orderName"
-              value={orderData.orderName}
-              onChange={handleChange}
-              variant="outlined"
-              className={styles.textField}
-            />
-          </div>
-          <div className={styles.orderContainer}>
-            <p>From: </p>
-            <TextField
-              name="from"
-              value={orderData.from}
-              onChange={handleChange}
-              variant="outlined"
-              className={styles.textField}
-            />
-          </div>
-          <div className={styles.orderContainer}>
-            <p>To: </p>
-            <TextField
-              name="to"
-              value={orderData.to}
-              onChange={handleChange}
-              variant="outlined"
-              className={styles.textField}
-            />
-          </div>
-          <div className={styles.additionalInfoContainer}>
-            <span>Additional Information</span>
-            <textarea
-              name="additionalInfo"
-              value={orderData.additionalInfo}
-              onChange={handleChange}
-              className={styles.textArea}
-            />
-          </div>
-          <div className={styles.buttonContainer}>
+    <Modal isOpen={isOpen} onClose={onClose}>
+      <ModalOverlay />
+      <div className={styles.modalContainer}>
+        <ModalContent className={styles.modalContent}>
+          <ModalHeader className={styles.header}>
+            Order Number {orderData.orderId}
+          </ModalHeader>
+          <ModalBody padding="10px" fontSize="16px">
+            {error && <span style={{ color: "red" }}>{error}</span>}
+            <div className={styles.orderContainer}>
+              <p>Order Name: </p>
+              <Input
+                name="orderName"
+                value={orderData.orderName}
+                onChange={handleChange}
+                className={styles.textField}
+              />
+            </div>
+            <div className={styles.orderContainer}>
+              <p>From: </p>
+              <Autocomplete className={styles.Autocomplete}>
+                <Input
+                  name="from"
+                  value={orderData.from}
+                  onChange={handleChange}
+                  variant="outline"
+                  ref={originRef}
+                  className={styles.textField}
+                  placeholder="Enter starting address (e.g., Street Name, City, Country)"
+                />
+              </Autocomplete>
+            </div>
+            <div className={styles.orderContainer}>
+              <p>To: </p>
+              <Autocomplete>
+                <Input
+                  name="to"
+                  ref={destinationRef}
+                  value={orderData.to}
+                  onChange={handleChange}
+                  variant="outline"
+                  className={styles.textField}
+                  placeholder="Enter starting address (e.g., Street Name, City, Country)"
+                />
+              </Autocomplete>
+            </div>
+            <div className={styles.additionalInfoContainer}>
+              <span>Additional Information</span>
+              <Textarea
+                name="additionalInfo"
+                value={orderData.additionalInfo}
+                onChange={handleChange}
+                className={styles.textArea}
+              />
+            </div>
+            {distance && orderData.to ? (
+              <div className={styles.orderSummary}>
+                <Text className={styles.summaryTitle}>Order Summary</Text>
+                <Text className={styles.distance}>Distance: {distance} </Text>
+                <Text className={styles.duration}>Duration: {duration} </Text>
+                <Text className={styles.total}>
+                  Total: {300 + distance.slice(0, 3) * 100} AMD
+                </Text>
+              </div>
+            ) : null}
+          </ModalBody>
+          <ModalFooter>
             <Button
-              variant="contained"
               onClick={onClose}
+              colorScheme="red"
               className={styles.cancelButton}
             >
               Cancel
             </Button>
             <Button
-              variant="contained"
               onClick={handleConfirmOrder}
+              colorScheme="yellow"
+              ml={3}
               className={styles.confirmButton}
             >
               Confirm Order
             </Button>
-          </div>
-        </div>
+          </ModalFooter>
+        </ModalContent>
       </div>
     </Modal>
   );

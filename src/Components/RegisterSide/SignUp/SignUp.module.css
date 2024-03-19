@@ -10,13 +10,13 @@
   border-radius: 5px;
   background-color: white;
   padding: 10px 40px;
-  width: 550px;
+  width: 430px;
 }
 .inputField {
-  height: 30px;
-  width: 350px;
+  height: 40px;
+  width: 100%;
   border: 1px solid rgb(196, 189, 189);
-  margin: 5px 0 !important;
+  margin: 10px 0 !important;
   padding: 5px;
   font-size: 18px;
 }
@@ -32,7 +32,7 @@
   width: 100%;
   border-bottom: 1px solid rgb(196, 189, 189);
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
   align-items: center;
 }
 .buttonDiv {
@@ -40,14 +40,14 @@
   display: flex;
   justify-content: center;
   width: 100%;
-  padding: 0 5px;
+  padding: 0 10px;
   align-items: center;
 }
 .termsDiv {
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: 5px;
+  padding: 0 10px;
   gap: 10px;
 }
 .selectDiv {
@@ -61,8 +61,12 @@
   width: 100%;
 }
 .title {
-  text-align: center;
-  margin: 0 0 10px 0;
+  border-bottom: 1px solid rgb(196, 189, 189);
+  padding: 10px;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 .error {
   text-align: center;
@@ -83,9 +87,6 @@
   .formContainer {
     width: 80%;
     margin: 10px 0;
-  }
-  .inputField {
-    margin: 8px 0;
   }
   .inputField {
     width: 100%;

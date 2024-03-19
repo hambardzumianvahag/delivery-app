@@ -2,10 +2,9 @@ import React, { useState } from "react";
 import styles from "./UserContent.module.css";
 import UserOrderModal from "../UserOrderModal/UserOrderModal";
 import userContentImage from "../../../images/userContent.png";
-
-const UserContent = ({ setUserData }) => {
+import { ChakraProvider, theme } from "@chakra-ui/react";
+const UserContent = ({ setUserData, userData }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
-
   const handleOpenModal = () => {
     setIsModalOpen(true);
   };
@@ -37,11 +36,13 @@ const UserContent = ({ setUserData }) => {
         <img src={userContentImage} alt="chbacec" />
       </div>
 
-      <UserOrderModal
-        setUserData={setUserData}
-        isOpen={isModalOpen}
-        onClose={handleCloseModal}
-      />
+      <ChakraProvider theme={theme}>
+        <UserOrderModal
+          setUserData={setUserData}
+          isOpen={isModalOpen}
+          onClose={handleCloseModal}
+        />
+      </ChakraProvider>
     </div>
   );
 };

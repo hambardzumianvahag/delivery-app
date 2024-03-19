@@ -32,11 +32,11 @@ const UserMain = () => {
 
     fetchUserData();
   }, [userID]);
-
+  console.log(userData);
   return (
     <div>
       <UserHeader userData={userData} setUserData={setUserData} />
-      <UserContent setUserData={setUserData} />
+      <UserContent setUserData={setUserData} userData={userData} />
       <UserAbout />
       <UserContact />
       <UserFooter />

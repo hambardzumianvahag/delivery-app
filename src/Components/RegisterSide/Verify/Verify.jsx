@@ -3,7 +3,8 @@ import React from "react";
 import { Link, useNavigate } from "react-router-dom";
 import styles from "./Verify.module.css";
 import { sendPasswordResetEmail } from "firebase/auth";
-import { auth } from "../../../../firebase/firebase-config";
+import { auth } from "../../../firebase/firebase-config";
+
 const Verify = () => {
   const navigate = useNavigate();
   const handleSubmit = async (e) => {

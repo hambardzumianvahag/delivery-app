@@ -1,6 +1,9 @@
 import {
   Button,
   FormControl,
+  IconButton,
+  Input,
+  InputAdornment,
   InputLabel,
   MenuItem,
   Select,
@@ -8,19 +11,19 @@ import {
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import styles from "./SignUp.module.css";
-import { createUserWithEmailAndPassword } from "firebase/auth";
-import { auth } from "../../../../firebase/firebase-config";
-import { db } from "../../../../firebase/firebase-config";
+import {
+  createUserWithEmailAndPassword,
+  sendEmailVerification,
+} from "firebase/auth";
 import { doc, setDoc } from "firebase/firestore";
+import { Visibility, VisibilityOff } from "@mui/icons-material";
+import { auth, db } from "../../../firebase/firebase-config";
 
 const SignUp = () => {
   const [formData, setFormData] = useState({
     name: "",
     surname: "",
     email: "",
-    // phoneNumber: "",
-    // birthDate: "",
-    // mainAddress: "",
     password: "",
     confirmPassword: "",
     position: "",
@@ -28,11 +31,22 @@ const SignUp = () => {
   const [isChecked, setIsChecked] = useState(false);
 
   const [error, setError] = useState(null);
+
+  const [showPassword, setShowPassword] = React.useState(false);
+  const handleClickShowPassword = () => setShowPassword((show) => !show);
+  const handleMouseDownPassword = (event) => {
+    event.preventDefault();
+  };
+
   const navigate = useNavigate();
 
   const validateForm = () => {
     const { name, surname, email, password, confirmPassword, position } =
       formData;
+    const regexCapital = /[A-Z]/;
+    const regexLowercase = /[a-z]/;
+    const regexDigit = /[0-9]/;
+    const regexSpecial = /[!@#$%^&*()_+\-=\[\]{}|:;"',.<>/?]/;
 
     if (!name) {
       setError("Name is required");
@@ -50,7 +64,22 @@ const SignUp = () => {
       setError("Password must be at least 6 characters long.");
       return false;
     }
-
+    if (!regexLowercase.test(password)) {
+      setError("Password must contain at least 1 lowercase letter");
+      return false;
+    }
+    if (!regexCapital.test(password)) {
+      setError("Password must contain at least 1 uppercase letter");
+      return false;
+    }
+    if (!regexDigit.test(password)) {
+      setError("Password must contain at least 1 number");
+      return false;
+    }
+    if (!regexSpecial.test(password)) {
+      setError("Password must contain at least 1 symbol");
+      return false;
+    }
     if (password !== confirmPassword) {
       setError("Passwords do not match.");
       return false;
@@ -76,11 +105,8 @@ const SignUp = () => {
     userId,
     name,
     surname,
-    // phoneNumber,
-    // birthDate,
-    // mainAddress,
     email,
-    position
+    position,
   ) => {
     try {
       const userRef = doc(db, "users", userId);
@@ -88,11 +114,9 @@ const SignUp = () => {
         name: name,
         surname: surname,
         position: position,
-        // phoneNumber: phoneNumber,
-        // birthDate: birthDate,
-        // mainAddress: mainAddress,
         email: email,
         id: userId,
+        isVerified: false,
       });
     } catch (error) {
       console.error("Error storing user position in Firestore:", error);
@@ -117,9 +141,6 @@ const SignUp = () => {
         name: "",
         surname: "",
         email: "",
-        // phoneNumber: "",
-        // birthDate: "",
-        // mainAddress: "",
         password: "",
         confirmPassword: "",
         position: "",
@@ -132,13 +153,16 @@ const SignUp = () => {
           formData.name,
           formData.surname,
           formData.email,
-          // formData.phoneNumber,
-          // formData.birthDate,
-          // formData.mainAddress,
           position
         );
       }
-
+      await sendEmailVerification(auth.currentUser)
+        .then(() => {
+          console.log("Check Your Email");
+        })
+        .catch((error) => {
+          console.log(error, "Something went wrong!");
+        });
       navigate("/delivery-app");
     } catch (error) {
       setError("Error creating user account:");
@@ -152,9 +176,9 @@ const SignUp = () => {
         <form onSubmit={handleSubmit}>
           {error && <div className={styles.error}>{error}</div>}
           <div className={styles.div}>
-            <label>Name</label>
-            <input
+            <Input
               className={styles.inputField}
+              placeholder="Name"
               type="text"
               name="name"
               autoComplete="name"
@@ -163,8 +187,8 @@ const SignUp = () => {
             />
           </div>
           <div className={styles.div}>
-            <label>Surname</label>
-            <input
+            <Input
+              placeholder="Surname"
               className={styles.inputField}
               type="text"
               name="surname"
@@ -174,8 +198,8 @@ const SignUp = () => {
             />
           </div>
           <div className={styles.div}>
-            <label>Email</label>
-            <input
+            <Input
+              placeholder="Email"
               className={styles.inputField}
               type="email"
               name="email"
@@ -185,25 +209,48 @@ const SignUp = () => {
             />
           </div>
           <div className={styles.div}>
-            <label>Password</label>
-            <input
+            <Input
+              placeholder="Password"
               className={styles.inputField}
-              type="password"
-              name="password"
-              autoComplete="new-password"
+              autoComplete="password"
               value={formData.password || ""}
               onChange={handleInputChange}
+              name="password"
+              id="standard-adornment-password"
+              type={showPassword ? "text" : "password"}
+              endAdornment={
+                <InputAdornment position="end">
+                  <IconButton
+                    aria-label="toggle password visibility"
+                    onClick={handleClickShowPassword}
+                    onMouseDown={handleMouseDownPassword}
+                  >
+                    {showPassword ? <VisibilityOff /> : <Visibility />}
+                  </IconButton>
+                </InputAdornment>
+              }
             />
           </div>
           <div className={styles.div}>
-            <label>Confirm Password</label>
-            <input
+            <Input
+              placeholder="Confirm Password"
               className={styles.inputField}
-              name="confirmPassword"
-              type="password"
               autoComplete="new-password"
+              name="confirmPassword"
               value={formData.confirmPassword || ""}
               onChange={handleInputChange}
+              type={showPassword ? "text" : "password"}
+              endAdornment={
+                <InputAdornment position="end">
+                  <IconButton
+                    aria-label="toggle password visibility"
+                    onClick={handleClickShowPassword}
+                    onMouseDown={handleMouseDownPassword}
+                  >
+                    {showPassword ? <VisibilityOff /> : <Visibility />}
+                  </IconButton>
+                </InputAdornment>
+              }
             />
           </div>
           <div className={styles.bottomContainer}>
