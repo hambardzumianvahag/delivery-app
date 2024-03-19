@@ -7,7 +7,7 @@ import { useState } from "react";
 import { UserContext } from "./Context/UserContext";
 import SignIn from "./Components/RegisterSide/SignIn/SignIn";
 import SignUp from "./Components/RegisterSide/SignUp/SignUp";
-import Verify from "./Components/RegisterSide/Verify/Verify";
+import ForgotPassword from "./Components/RegisterSide/ForgotPassword/ForgotPassword";
 
 function App() {
   const [user, setUser] = useState({ name: '', surname: '', email: '' });
@@ -22,7 +22,7 @@ function App() {
           <Route path="/delivery-app/signup" element={<SignUp />} />
           <Route path="/delivery-app/user/:userID" element={<UserMain />} />
           <Route path="/delivery-app/courier" element={<CourierMain />} />
-          <Route path="/delivery-app/verify" element={<Verify />} />
+          <Route path="/delivery-app/forgotpassword" element={<ForgotPassword />} />
           <Route path="/delivery-app/admin" element={<Admin />} />
         </Routes>
       </UserContext.Provider>

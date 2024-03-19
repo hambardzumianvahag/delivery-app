@@ -1,11 +1,11 @@
 import { Button, TextField } from "@mui/material";
 import React from "react";
 import { Link, useNavigate } from "react-router-dom";
-import styles from "./Verify.module.css";
+import styles from "./ForgotPassword.module.css";
 import { sendPasswordResetEmail } from "firebase/auth";
 import { auth } from "../../../firebase/firebase-config";
 
-const Verify = () => {
+const ForgotPassword = () => {
   const navigate = useNavigate();
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -42,4 +42,4 @@ const Verify = () => {
   );
 };
 
-export default Verify;
+export default ForgotPassword;
