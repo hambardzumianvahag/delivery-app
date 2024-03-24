@@ -29,8 +29,11 @@ const ForgotPassword = () => {
           <h1 className={styles.title}>Forgot Password</h1>
           <form onSubmit={handleSubmit}>
             <div>
-              <label>Enter your mail</label> <br />
-              <TextField name="email" className={styles.inputField} />
+              <TextField
+                name="email"
+                className={styles.inputField}
+                placeholder="Enter Your Email"
+              />
             </div>
             <Button className={styles.button} type="submit" variant="contained">
               Reset Password

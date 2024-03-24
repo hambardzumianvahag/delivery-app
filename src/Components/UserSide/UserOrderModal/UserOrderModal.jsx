@@ -27,8 +27,13 @@ import { Autocomplete, useJsApiLoader } from "@react-google-maps/api";
 
 const libraries = ["places"];
 
-const UserOrderModal = ({ isOpen, onClose, setUserData }) => {
+const UserOrderModal = ({ isOpen, onClose, setUserData, userData }) => {
+  const [error, setError] = useState("");
+  const location = useLocation();
+  const locationPath = location.pathname.split("/");
+  const userId = locationPath[locationPath.length - 1];
   const [orderData, setOrderData] = useState({
+    userId: userId,
     orderId: "",
     orderName: "",
     from: "",
@@ -39,10 +44,6 @@ const UserOrderModal = ({ isOpen, onClose, setUserData }) => {
     duration: "",
     total: "",
   });
-  const [error, setError] = useState("");
-  const location = useLocation();
-  const locationPath = location.pathname.split("/");
-  const userId = locationPath[locationPath.length - 1];
 
   const { isLoaded } = useJsApiLoader({
     googleMapsApiKey: "AIzaSyAPHw8Db5Ux9sMohE1FBZZmntxl_cdCDOQ",
@@ -77,30 +78,64 @@ const UserOrderModal = ({ isOpen, onClose, setUserData }) => {
   if (!isLoaded) {
     return <SkeletonText />;
   }
-
   async function calculateRoute() {
     if (originRef.current.value === "" || destinationRef.current.value === "") {
+      setDistance("");
+      setDuration("");
+      setOrderData((prevData) => ({
+        ...prevData,
+        distance: "",
+        duration: "",
+        total: "",
+      }));
       return;
     }
-    // eslint-disable-next-line no-undef
-    const directionsService = new google.maps.DirectionsService();
-    const results = await directionsService.route({
-      origin: originRef.current.value,
-      destination: destinationRef.current.value,
+
+    try {
       // eslint-disable-next-line no-undef
-      travelMode: google.maps.TravelMode.DRIVING,
-    });
-    const calculatedDistance = results.routes[0].legs[0].distance.text;
-    const calculatedDuration = results.routes[0].legs[0].duration.text;
-    const total = 300 + parseFloat(calculatedDistance.slice(0, 3)) * 100;
-    setDistance(calculatedDistance);
-    setDuration(calculatedDuration);
-    setOrderData((prevData) => ({
-      ...prevData,
-      distance: calculatedDistance,
-      duration: calculatedDuration,
-      total: `${total} AMD`,
-    }));
+      const directionsService = new google.maps.DirectionsService();
+      const results = await directionsService.route({
+        origin: originRef.current.value,
+        destination: destinationRef.current.value,
+        // eslint-disable-next-line no-undef
+        travelMode: google.maps.TravelMode.DRIVING,
+      });
+
+      if (results.status === "OK") {
+        const calculatedDistance = results.routes[0].legs[0].distance.text;
+        const calculatedDuration = results.routes[0].legs[0].duration.text;
+        const total = 300 + parseFloat(calculatedDistance.slice(0, 3)) * 100;
+        setDistance(calculatedDistance);
+        setDuration(calculatedDuration);
+        setOrderData((prevData) => ({
+          ...prevData,
+          distance: calculatedDistance,
+          duration: calculatedDuration,
+          total: `${total} AMD`,
+        }));
+      } else {
+        // Handle the case where directions cannot be found
+        console.error("Directions not found:", results.status);
+        setDistance("");
+        setDuration("");
+        setOrderData((prevData) => ({
+          ...prevData,
+          distance: "",
+          duration: "",
+          total: "",
+        }));
+      }
+    } catch (error) {
+      console.error("Error calculating route:", error);
+      setDistance("");
+      setDuration("");
+      setOrderData((prevData) => ({
+        ...prevData,
+        distance: "",
+        duration: "",
+        total: "",
+      }));
+    }
   }
 
   const handleChange = (e) => {
@@ -124,18 +159,22 @@ const UserOrderModal = ({ isOpen, onClose, setUserData }) => {
       setError("To Field is Required");
       return false;
     }
-    if (orderData.orderName.length > 12) {
-      setError("Order Name is too long (maximum 12 characters)");
+    if (orderData.orderName.length > 20) {
+      setError("Order Name is too long");
       return false;
     }
-    if (orderData.from.length > 12) {
-      setError("From Address is too long (maximum 12 characters)");
+    if (orderData.from.length > 20) {
+      setError("From Address is too long");
       return false;
     }
-    if (orderData.to.length > 12) {
-      setError("To Address is too long (maximum 12 characters)");
+    if (orderData.to.length > 20) {
+      setError("To Address is too long");
       return false;
     }
+    if (!orderData.distance) {
+      setError("Please Enter valid addresses");
+      return false;
+    } //! stugelu entaka
     setError("");
     return true;
   };
@@ -145,14 +184,19 @@ const UserOrderModal = ({ isOpen, onClose, setUserData }) => {
       return;
     }
     try {
-      await addDoc(collection(db, "orders"), orderData);
+      const orderRef = await addDoc(collection(db, "orders"), orderData);
+      const oId = orderRef.id;
+      await updateDoc(orderRef, { oId });
+
       const userDocRef = doc(db, "users", userId);
       const userDocSnap = await getDoc(userDocRef);
       if (userDocSnap.exists()) {
         const userData = userDocSnap.data();
-        const updatedOrders = [...(userData.orders || []), orderData];
+        const updatedOrders = [
+          ...(userData.orders || []),
+          { ...orderData, oId },
+        ];
         await updateDoc(userDocRef, { orders: updatedOrders });
-
         const updatedUserDocSnap = await getDoc(userDocRef);
         if (updatedUserDocSnap.exists()) {
           const updatedUserData = updatedUserDocSnap.data();
@@ -168,6 +212,7 @@ const UserOrderModal = ({ isOpen, onClose, setUserData }) => {
       const count = ordersSnapshot.size + 1;
       const orderId = `#${String(count).padStart(4, "0")}`;
       setOrderData({
+        userId: userId,
         orderName: "",
         from: "",
         to: "",
@@ -183,6 +228,20 @@ const UserOrderModal = ({ isOpen, onClose, setUserData }) => {
     }
   };
 
+  const handleUseMainAddressforFrom = () => {
+    setOrderData((prevData) => ({
+      ...prevData,
+      from: userData?.mainAddress,
+    }));
+  };
+
+  const handleUseMainAddressforTo = () => {
+    setOrderData((prevData) => ({
+      ...prevData,
+      to: userData?.mainAddress,
+    }));
+  };
+
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
       <ModalOverlay />
@@ -192,18 +251,31 @@ const UserOrderModal = ({ isOpen, onClose, setUserData }) => {
             Order Number {orderData.orderId}
           </ModalHeader>
           <ModalBody padding="10px" fontSize="16px">
-            {error && <span style={{ color: "red" }}>{error}</span>}
+            {error && <span className={styles.error}>{error}</span>}
             <div className={styles.orderContainer}>
               <p>Order Name: </p>
               <Input
                 name="orderName"
+                placeholder="Enter the name of this order..."
                 value={orderData.orderName}
                 onChange={handleChange}
                 className={styles.textField}
               />
             </div>
             <div className={styles.orderContainer}>
-              <p>From: </p>
+              <p>
+                From:
+                {userData?.mainAddress &&
+                !orderData.from &&
+                orderData.to !== userData?.mainAddress ? (
+                  <span
+                    onClick={handleUseMainAddressforFrom}
+                    className={styles.mainAddress}
+                  >
+                    Use Main Address
+                  </span>
+                ) : null}
+              </p>
               <Autocomplete className={styles.Autocomplete}>
                 <Input
                   name="from"
@@ -217,7 +289,19 @@ const UserOrderModal = ({ isOpen, onClose, setUserData }) => {
               </Autocomplete>
             </div>
             <div className={styles.orderContainer}>
-              <p>To: </p>
+              <p>
+                To:
+                {userData?.mainAddress &&
+                !orderData.to &&
+                orderData.from !== userData?.mainAddress ? (
+                  <span
+                    onClick={handleUseMainAddressforTo}
+                    className={styles.mainAddress}
+                  >
+                    Use Main Address
+                  </span>
+                ) : null}{" "}
+              </p>
               <Autocomplete>
                 <Input
                   name="to"
@@ -233,13 +317,14 @@ const UserOrderModal = ({ isOpen, onClose, setUserData }) => {
             <div className={styles.additionalInfoContainer}>
               <span>Additional Information</span>
               <Textarea
+                placeholder="Any additional information about your order if it's needed?"
                 name="additionalInfo"
                 value={orderData.additionalInfo}
                 onChange={handleChange}
                 className={styles.textArea}
               />
             </div>
-            {distance && orderData.to ? (
+            {distance && duration && orderData.from && orderData.to ? (
               <div className={styles.orderSummary}>
                 <Text className={styles.summaryTitle}>Order Summary</Text>
                 <Text className={styles.distance}>Distance: {distance} </Text>

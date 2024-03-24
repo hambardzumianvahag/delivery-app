@@ -1,13 +1,4 @@
-import {
-  Button,
-  FormControl,
-  IconButton,
-  Input,
-  InputAdornment,
-  InputLabel,
-  MenuItem,
-  Select,
-} from "@mui/material";
+import { Button, IconButton, Input, InputAdornment } from "@mui/material";
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import styles from "./SignIn.module.css";
@@ -20,7 +11,6 @@ const SignIn = () => {
   const [formData, setFormData] = useState({
     email: "",
     password: "",
-    position: "",
   });
 
   const [error, setError] = useState(null);
@@ -40,24 +30,36 @@ const SignIn = () => {
   const fetchUserPosition = async (email) => {
     try {
       const usersCollection = collection(db, "users");
-      const q = query(usersCollection, where("email", "==", email));
-      const querySnapshot = await getDocs(q);
+      const couriersCollection = collection(db, "couriers");
 
-      if (querySnapshot.size > 0) {
-        querySnapshot.forEach((doc) => {
-          const userPosition = doc.data().position;
-          if (userPosition === formData.position) {
-            const userId = doc.id; // Assuming userID is stored as document ID in Firestore
-            if (email === "admin@gmail.com") {
-              navigate("/delivery-app/admin");
-            } else {
-              navigate(`/delivery-app/user/${userId}`); // Navigate to /user/userID
-            }
-          } else {
-            setError("Login Error! Try again.");
-          }
-        });
-      } else {
+      // Query the users collection
+      const usersQuery = query(usersCollection, where("email", "==", email));
+      const usersSnapshot = await getDocs(usersQuery);
+
+      // Query the couriers collection
+      const couriersQuery = query(
+        couriersCollection,
+        where("email", "==", email)
+      );
+      const couriersSnapshot = await getDocs(couriersQuery);
+
+      let userFound = false;
+
+      // Check if the email belongs to a user
+      usersSnapshot.forEach((doc) => {
+        userFound = true;
+        const userId = doc.id; // Assuming userID is stored as document ID in Firestore
+        navigate(`/delivery-app/user/${userId}`);
+      });
+
+      // Check if the email belongs to a courier
+      couriersSnapshot.forEach((doc) => {
+        userFound = true;
+        const courierId = doc.id; // Assuming courierID is stored as document ID in Firestore
+        navigate(`/delivery-app/courier/${courierId}`);
+      });
+
+      if (!userFound) {
         setError("Login Error! Try again.");
       }
     } catch (error) {
@@ -127,31 +129,14 @@ const SignIn = () => {
               }
             />
           </div>
-          <div className={styles.div}>
-            <FormControl fullWidth>
-              <InputLabel id="demo-simple-select-label">
-                Choose your position
-              </InputLabel>
-              <Select
-                labelId="demo-simple-select-label"
-                id="demo-simple-select"
-                label="Choose your position"
-                value={formData.position || ""}
-                name="position"
-                onChange={handleInputChange}
-              >
-                <MenuItem value="User">User</MenuItem>
-                <MenuItem value="Courier">Courier</MenuItem>
-              </Select>
-            </FormControl>
-          </div>
+          <div className={styles.div}></div>
           <div className={styles.div}>
             <Button type="submit" className={styles.button} variant="contained">
               Login
             </Button>
           </div>
           <div className={styles.div}>
-            <Link to="/delivery-app/verify" className={styles.text}>
+            <Link to="/delivery-app/forgotpassword" className={styles.text}>
               <p className={styles.text}>Forgot Password?</p>
             </Link>
           </div>

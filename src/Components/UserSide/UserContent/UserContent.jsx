@@ -38,6 +38,7 @@ const UserContent = ({ setUserData, userData }) => {
 
       <ChakraProvider theme={theme}>
         <UserOrderModal
+          userData={userData}
           setUserData={setUserData}
           isOpen={isModalOpen}
           onClose={handleCloseModal}

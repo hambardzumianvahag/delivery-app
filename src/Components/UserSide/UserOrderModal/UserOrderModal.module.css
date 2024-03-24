@@ -12,6 +12,7 @@
 .header {
   display: flex;
   justify-content: center;
+  align-items: center;
 }
 
 .modalBody {
@@ -30,6 +31,21 @@
   width: calc(100% - 10px);
   max-width: calc(100% - 10px);
   height: 60px;
+}
+.error {
+  color: red;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: -10px;
+  margin-bottom: 5px;
+}
+.mainAddress {
+  cursor: pointer;
+  float: right;
+}
+.mainAddress:hover {
+  color: #fdc72d;
 }
 
 .buttonContainer {
@@ -54,6 +70,7 @@
 }
 .total {
   font-weight: bold;
+  margin-top: 5px;
 }
 .cancelButton,
 .confirmButton {

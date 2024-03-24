@@ -106,18 +106,32 @@ const SignUp = () => {
     name,
     surname,
     email,
-    position,
+    position
   ) => {
     try {
-      const userRef = doc(db, "users", userId);
-      await setDoc(userRef, {
-        name: name,
-        surname: surname,
-        position: position,
-        email: email,
-        id: userId,
-        isVerified: false,
-      });
+      // Reference to the "users" collection
+      if (formData.position === "User") {
+        const usersRef = doc(db, "users", userId);
+        // Set user data in the "users" collection
+        await setDoc(usersRef, {
+          name: name,
+          surname: surname,
+          position: position,
+          email: email,
+          id: userId,
+        });
+      } else {
+        // Reference to the "Couriers" collection
+        const couriersRef = doc(db, "couriers", userId);
+        // Set courier data in the "Couriers" collection
+        await setDoc(couriersRef, {
+          name: name,
+          surname: surname,
+          position: position,
+          email: email,
+          id: userId,
+        });
+      }
     } catch (error) {
       console.error("Error storing user position in Firestore:", error);
     }

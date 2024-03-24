@@ -21,7 +21,7 @@ function App() {
           <Route path="/delivery-app/" element={<SignIn />} />
           <Route path="/delivery-app/signup" element={<SignUp />} />
           <Route path="/delivery-app/user/:userID" element={<UserMain />} />
-          <Route path="/delivery-app/courier" element={<CourierMain />} />
+          <Route path="/delivery-app/courier/:userID" element={<CourierMain />} />
           <Route path="/delivery-app/forgotpassword" element={<ForgotPassword />} />
           <Route path="/delivery-app/admin" element={<Admin />} />
         </Routes>

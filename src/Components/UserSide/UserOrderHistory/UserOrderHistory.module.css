@@ -3,8 +3,8 @@
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  width: 90%; /* Adjusted width for better responsiveness */
-  max-width: 800px; /* Increased max-width for larger screens */
+  width: 90%;
+  max-width: 800px;
   padding: 20px;
   border-radius: 8px;
 }
@@ -17,6 +17,8 @@
 }
 
 .title {
+  font-size: 20px;
+  font-weight: bolder;
   text-align: center;
   margin: 5px 0;
 }
@@ -78,6 +80,8 @@
   font-size: 16px;
   display: flex;
   margin: 0 auto;
+  max-width: 100%; /* Ensure button doesn't exceed container width */
+  box-sizing: border-box; /* Include padding and border in width */
 }
 
 .cancelOrder:hover {
@@ -94,9 +98,40 @@
   align-items: center;
 }
 /* Adjustments for smaller screens */
-@media screen and (max-width: 600px) {
+@media screen and (max-width: 780) {
   .modalContainer {
-    width: 95%; /* Adjusted width for smaller screens */
-    max-width: 95%; /* Adjusted max-width for smaller screens */
+    padding: 0;
+    margin: 0;
+  }
+  .modalContent {
+    padding: 5px; /* Reduce padding for smaller screens */
+  }
+
+  .title {
+    font-size: 10px; /* Decrease font size for the title */
+  }
+
+  .close {
+    top: 2px; /* Adjust close button position */
+    font-size: 18px; /* Decrease font size for the close button */
+  }
+
+  .headerCell {
+    font-size: 8px; /* Decrease font size for header cells */
+  }
+
+  .table td,
+  .table th {
+    padding: 6px 4px; /* Reduce padding for table cells */
+    font-size: 8px; /* Decrease font size for table cells */
+  }
+
+  .cancelOrder {
+    padding: 3px;
+    font-size: 8px; /* Decrease font size for cancel button */
+  }
+
+  .status {
+    font-size: 8px; /* Decrease font size for status */
   }
 }

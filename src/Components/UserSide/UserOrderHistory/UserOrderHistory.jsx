@@ -68,7 +68,7 @@ const UserOrderHistory = ({ userData, isOpen, onClose, setUserData }) => {
     <Modal open={isOpen} onClose={onClose}>
       <div className={styles.modalContainer}>
         <div className={styles.modalContent}>
-          <h2 className={styles.title}>User Order History</h2>
+          <h1 className={styles.title}>User Order History</h1>
           <span className={styles.close} onClick={onClose}>
             &#10005;
           </span>
