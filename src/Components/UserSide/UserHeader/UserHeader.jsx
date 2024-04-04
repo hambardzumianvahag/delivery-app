@@ -2,14 +2,21 @@ import React, { useState } from "react";
 import styles from "./UserHeader.module.css";
 import DeliveryDiningIcon from "@mui/icons-material/DeliveryDining";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
-import { Menu, MenuItem } from "@mui/material";
+import { Menu, MenuItem, Select } from "@mui/material";
 import { useNavigate } from "react-router";
 import LogoutIcon from "@mui/icons-material/Logout";
 import UserProfile from "../UserProfile/UserProfile";
 import MenuIcon from "@mui/icons-material/Menu";
 import UserOrderHistory from "../UserOrderHistory/UserOrderHistory";
 
-const UserHeader = ({ userData, setUserData }) => {
+const UserHeader = ({
+  setUserOrders,
+  userData,
+  setUserData,
+  language,
+  setLanguage,
+  userOrders,
+}) => {
   const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
   const [isOrderHistoryModalOpen, setIsOrderHistoryModalOpen] = useState(false);
   const [burgerMenuAnchorEl, setBurgerMenuAnchorEl] = useState(null);
@@ -61,6 +68,9 @@ const UserHeader = ({ userData, setUserData }) => {
     contactUsSection.scrollIntoView({ behavior: "smooth" });
   };
 
+  const handleLanguageChange = (event) => {
+    setLanguage(event.target.value);
+  };
   return (
     <div className={styles.userHeader}>
       <div className={styles.headerContainer}>
@@ -93,20 +103,44 @@ const UserHeader = ({ userData, setUserData }) => {
                   "aria-labelledby": "basic-button",
                 }}
               >
-                <MenuItem onClick={handleHomeClick}>Home</MenuItem>
-                <MenuItem onClick={handleAboutUsClick}>About Us</MenuItem>
-                <MenuItem onClick={handleContactUsClick}>Contact</MenuItem>
+                <MenuItem onClick={handleHomeClick}>
+                  {language === "English" ? "Home" : "Գլխավոր"}
+                </MenuItem>
+                <MenuItem onClick={handleAboutUsClick}>
+                  {language === "English" ? "About Us" : "Մեր մասին"}
+                </MenuItem>
+                <MenuItem onClick={handleContactUsClick}>
+                  {language === "English" ? "Contact" : "Կապ Մեզ Հետ"}
+                </MenuItem>
+                <MenuItem>
+                  <Select
+                    value={language}
+                    onChange={(e) => setLanguage(e.target.value)}
+                    label="Language"
+                  >
+                    <MenuItem value="English">EN</MenuItem>
+                    <MenuItem value="Armenian">AM</MenuItem>
+                  </Select>
+                </MenuItem>
               </Menu>
             </li>
 
             <li className={styles.menuList} onClick={handleHomeClick}>
-              Home
+              {language === "English" ? "Home" : "Գլխավոր"}
             </li>
             <li className={styles.menuList} onClick={handleAboutUsClick}>
-              About Us
+              {language === "English" ? "About Us" : "Մեր մասին"}
             </li>
             <li className={styles.menuList} onClick={handleContactUsClick}>
-              Contact
+              {language === "English" ? "Contact" : "Կապ Մեզ Հետ"}
+            </li>
+            <li className={styles.menuList}>
+              <div className={styles.selectContainer}>
+                <select value={language} onChange={handleLanguageChange}>
+                  <option value="English">EN</option>
+                  <option value="Armenian">AM</option>
+                </select>
+              </div>
             </li>
             <li>
               <div
@@ -128,9 +162,13 @@ const UserHeader = ({ userData, setUserData }) => {
                   "aria-labelledby": "basic-button",
                 }}
               >
-                <MenuItem onClick={handleOpenProfileModal}>My Profile</MenuItem>
+                <MenuItem onClick={handleOpenProfileModal}>
+                  {language === "English" ? "My Profile" : "Իմ տվյալները"}
+                </MenuItem>
                 <MenuItem onClick={handleOpenOrderHistoryModal}>
-                  My Order's History
+                  {language === "English"
+                    ? "My Order's History"
+                    : "Պատվերների պատմություն"}
                 </MenuItem>
                 <MenuItem
                   onClick={() => {
@@ -141,7 +179,10 @@ const UserHeader = ({ userData, setUserData }) => {
                   <LogoutIcon
                     style={{ color: "#FDC72D", marginRight: "10px" }}
                   />{" "}
-                  <span> Logout</span>
+                  <span>
+                    {" "}
+                    {language === "English" ? "Log out" : "Դուրս գալ"}
+                  </span>
                 </MenuItem>
               </Menu>
             </li>
@@ -153,12 +194,16 @@ const UserHeader = ({ userData, setUserData }) => {
         isOpen={isProfileModalOpen}
         onClose={handleCloseProfileModal}
         setUserData={setUserData}
+        language={language}
       />
       <UserOrderHistory
-      setUserData={setUserData}
+        setUserOrders={setUserOrders}
+        userOrders={userOrders}
+        setUserData={setUserData}
         userData={userData}
         isOpen={isOrderHistoryModalOpen}
         onClose={handleCloseOrderHistoryModal}
+        language={language}
       />
     </div>
   );

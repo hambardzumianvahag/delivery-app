@@ -2,30 +2,28 @@ import { doc, updateDoc } from "@firebase/firestore";
 import { Button, Modal, TextField } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import { db } from "../../../firebase/firebase-config";
-import styles from "./UserEditProfile.module.css";
+import styles from "./CourierEditModal.module.css";
 
-const UserEditProfile = ({
+const CourierEditModal = ({
   isOpen,
   onClose,
-  userData,
-  setUserData,
+  courierData,
+  setCourierData,
   language,
 }) => {
   const [name, setName] = useState("");
   const [surname, setSurname] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
-  const [mainAddress, setMainAddress] = useState("");
   const [birthDate, setBirthDate] = useState("");
 
   useEffect(() => {
-    if (userData) {
-      setName(userData?.name);
-      setSurname(userData?.surname);
-      setPhoneNumber(userData?.phoneNumber || "");
-      setMainAddress(userData?.mainAddress || "");
-      setBirthDate(userData?.birthDate || "");
+    if (courierData) {
+      setName(courierData?.name);
+      setSurname(courierData?.surname);
+      setPhoneNumber(courierData?.phoneNumber || "");
+      setBirthDate(courierData?.birthDate || "");
     }
-  }, [userData]);
+  }, [courierData]);
 
   const handleNameChange = (event) => {
     setName(event.target.value);
@@ -39,10 +37,6 @@ const UserEditProfile = ({
     setPhoneNumber(event.target.value);
   };
 
-  const handleMainAddressChange = (event) => {
-    setMainAddress(event.target.value);
-  };
-
   const handleBirthDateChange = (event) => {
     setBirthDate(event.target.value);
   };
@@ -50,17 +44,16 @@ const UserEditProfile = ({
   const handleSubmit = async () => {
     try {
       const updatedUserData = {
-        ...userData,
+        ...courierData,
         name,
         surname,
         phoneNumber,
-        mainAddress,
         birthDate,
       };
 
-      await updateDoc(doc(db, "users", userData.id), updatedUserData);
+      await updateDoc(doc(db, "couriers", courierData.id), updatedUserData);
       onClose();
-      setUserData(updatedUserData);
+      setCourierData(updatedUserData);
     } catch (error) {
       console.error("Error updating user data:", error);
     }
@@ -110,13 +103,6 @@ const UserEditProfile = ({
           margin="normal"
         />
         <TextField
-          label={language === "English" ? "Main Address" : "Հիմնական հասցե"}
-          value={mainAddress}
-          onChange={handleMainAddressChange}
-          fullWidth
-          margin="normal"
-        />
-        <TextField
           label={language === "English" ? "Birth Date" : "Ծննդյան ամսաթիվ"}
           type="date"
           value={birthDate}
@@ -154,4 +140,4 @@ const UserEditProfile = ({
   );
 };
 
-export default UserEditProfile;
+export default CourierEditModal;

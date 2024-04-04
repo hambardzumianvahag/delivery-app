@@ -1,34 +1,4 @@
-/* CourierMain.module.css */
-
-.container {
-  font-family: Arial, sans-serif;
-  margin: 20px;
-}
-
-h2 {
-  color: #333;
-}
-
-table {
-  width: 100%;
-  border-collapse: collapse;
-  border: 1px solid #ddd;
-}
-
-th,
-td {
-  padding: 8px;
-  text-align: left;
-}
-
-th {
-  background-color: #f2f2f2;
-}
-
-tr:nth-child(even) {
-  background-color: #f2f2f2;
-}
-
-tr:hover {
-  background-color: #ddd;
+.courierMain {
+  background-color: #fdc72d;
+  min-height: 100vh;
 }

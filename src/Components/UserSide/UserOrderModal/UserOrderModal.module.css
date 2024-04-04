@@ -1,6 +1,6 @@
 .modalContent {
   position: fixed;
-  top: -5%;
+  top: -9%;
   transform: translate(-50%, -50%);
   background-color: #ffffff;
   padding: 10px;
@@ -8,15 +8,19 @@
   width: 90%;
   max-width: 400px;
 }
+.selectField {
+  cursor: pointer;
+}
 
 .header {
   display: flex;
+  margin-bottom: -30px;
   justify-content: center;
   align-items: center;
 }
 
 .modalBody {
-  font-size: 16px;
+  font-size: 15px;
 }
 
 .textField {
@@ -60,7 +64,7 @@
 
 .orderSummary {
   padding: 0 5px;
-  font-size: 16px;
+  font-size: 15px;
 }
 .summaryTitle {
   text-align: center;

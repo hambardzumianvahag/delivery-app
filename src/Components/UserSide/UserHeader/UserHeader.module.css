@@ -22,12 +22,50 @@
 }
 .userHeader ul {
   display: flex;
+  align-items: center;
   gap: 40px;
   margin: 0;
   padding: 0;
   font-size: 18px;
   list-style: none;
 }
+
+.selectContainer {
+  position: relative;
+  display: inline-block;
+}
+
+.selectContainer select {
+  text-align: center;
+  appearance: none; /* Remove default arrow */
+  padding: 8px 24px 8px 8px; /* Adjust padding */
+  font-size: 16px; /* Adjust font size */
+  border: 1px solid #ccc; /* Add border */
+  border-radius: 4px; /* Add border radius */
+  background-color: #fff; /* Background color */
+  cursor: pointer; /* Show pointer cursor */
+  width: 70px; /* Set width as needed */
+}
+
+.selectContainer select:focus {
+  outline: none; /* Remove focus outline */
+  border-color: #fdc72d; /* Change border color on focus */
+}
+
+.selectContainer::after {
+  content: "\25BC"; /* Unicode character for down arrow */
+  position: absolute;
+  color: #fdc72d;
+  top: 50%;
+  right: 10px;
+  transform: translateY(-50%);
+  pointer-events: none;
+}
+
+.selectContainer select option {
+  padding: 8px; /* Adjust padding */
+}
+
 .userHeader ul li {
   cursor: pointer;
   display: inline-block;

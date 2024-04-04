@@ -1,0 +1,20 @@
+.courierHeader {
+  width: 95%;
+  margin: 0 auto;
+  padding: 10px 0;
+}
+.courierHeader ul {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  text-decoration: none;
+  list-style: none;
+  gap: 50px;
+  color: white;
+}
+.courierHeader ul li {
+  cursor: pointer;
+}
+.languageSelect {
+  background-color: white;
+}

@@ -1,9 +1,15 @@
 import { Button, Modal } from "@mui/material";
 import React, { useState } from "react";
-import styles from "./UserProfile.module.css";
-import UserEditProfile from "../UserEditProfile/UserEditProfile";
+import styles from "./CourierProfileModal.module.css";
+import CourierEditModal from "../CourierEditModal/CourierEditModal";
 
-const UserProfile = ({ userData, setUserData, isOpen, onClose, language }) => {
+const CourierProfileModal = ({
+  openModal,
+  onClose,
+  courierData,
+  language,
+  setCourierData,
+}) => {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const handleOpenEditModal = () => {
     setIsEditModalOpen(true);
@@ -12,50 +18,51 @@ const UserProfile = ({ userData, setUserData, isOpen, onClose, language }) => {
   const handleCloseEditModal = () => {
     setIsEditModalOpen(false);
   };
+
   return (
     <>
-      <Modal open={isOpen} onClose={onClose}>
+      <Modal open={openModal} onClose={onClose}>
         <div className={styles.container}>
           <span className={styles.close} onClick={onClose}>
             &#10005;
           </span>
           <h2 className={styles.header}>
             {language === "English"
-              ? "User Profile Details"
-              : "Օգտատիրոջ տվյալների մանրամասներ"}
+              ? "Courier Profile Details"
+              : "Առաքիչի տվյալների մանրամասներ"}
           </h2>
           <p className={styles.text}>
             {language === "English" ? "Name: " : "Անուն։ "}
-            {userData?.name}
+            {courierData?.name}
           </p>
           <p className={styles.text}>
             {" "}
             {language === "English" ? "Surname: " : "Ազգանուն։ "}
-            {userData?.surname}
+            {courierData?.surname}
           </p>
           <p className={styles.text}>
             {" "}
             {language === "English" ? "Email: " : "Էլ.փոստ։ "}
-            {userData?.email}
+            {courierData?.email}
           </p>
-          {userData?.phoneNumber && (
+          {courierData?.phoneNumber && (
             <p className={styles.text}>
               {" "}
               {language === "English" ? "Phone Number: " : "Հեռախոսահամար։ "}
-              {userData?.phoneNumber}
+              {courierData?.phoneNumber}
             </p>
           )}
-          {userData?.birthDate && (
+          {courierData?.birthDate && (
             <p className={styles.text}>
               {" "}
               {language === "English" ? "Birth Date: " : "Ծննդյան ամսաթիվ։ "}
-              {userData?.birthDate}
+              {courierData?.birthDate}
             </p>
           )}
-          {userData?.mainAddress && (
+          {courierData?.mainAddress && (
             <p className={styles.text}>
               {language === "English" ? "Main Address: " : "Հիմնական հասցե։ "}
-              {userData?.mainAddress}
+              {courierData?.mainAddress}
             </p>
           )}
           <div className={styles.btns}>
@@ -78,15 +85,15 @@ const UserProfile = ({ userData, setUserData, isOpen, onClose, language }) => {
           </div>
         </div>
       </Modal>
-      <UserEditProfile
+      <CourierEditModal
         isOpen={isEditModalOpen}
         onClose={handleCloseEditModal}
-        userData={userData}
-        setUserData={setUserData}
+        courierData={courierData}
+        setCourierData={setCourierData}
         language={language}
       />
     </>
   );
 };
 
-export default UserProfile;
+export default CourierProfileModal;

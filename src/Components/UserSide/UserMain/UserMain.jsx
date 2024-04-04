@@ -11,16 +11,18 @@ import UserFooter from "../UserFooter/UserFooter";
 const UserMain = () => {
   const { userID } = useParams();
   const [userData, setUserData] = useState(null);
+  const [userOrders, setUserOrders] = useState([]);
+  const [language, setLanguage] = useState("English");
 
   useEffect(() => {
     const fetchUserData = async () => {
       try {
         const usersCollection = collection(db, "users");
-        const q = query(usersCollection, where("id", "==", userID));
-        const querySnapshot = await getDocs(q);
+        const userQuery = query(usersCollection, where("id", "==", userID));
+        const userQuerySnapshot = await getDocs(userQuery);
 
-        if (!querySnapshot.empty) {
-          const userData = querySnapshot.docs[0].data();
+        if (!userQuerySnapshot.empty) {
+          const userData = userQuerySnapshot.docs[0].data();
           setUserData(userData);
         } else {
           console.log("User not found");
@@ -30,18 +32,50 @@ const UserMain = () => {
       }
     };
 
+    const fetchUserOrders = async () => {
+      try {
+        const ordersCollection = collection(db, "orders");
+        const ordersQuery = query(
+          ordersCollection,
+          where("userId", "==", userID)
+        );
+        const ordersQuerySnapshot = await getDocs(ordersQuery);
+
+        if (!ordersQuerySnapshot.empty) {
+          const ordersData = ordersQuerySnapshot.docs.map((doc) => doc.data());
+          setUserOrders(ordersData);
+        } else {
+          console.log("No orders found for this user");
+        }
+      } catch (error) {
+        console.error("Error fetching user orders:", error);
+      }
+    };
+
     fetchUserData();
+    fetchUserOrders();
   }, [userID]);
+
   return (
     <div>
       <UserHeader
+        setUserOrders={setUserOrders}
+        userOrders={userOrders}
         userData={userData}
         setUserData={setUserData}
+        language={language}
+        setLanguage={setLanguage}
       />
-      <UserContent setUserData={setUserData} userData={userData} />
-      <UserAbout />
-      <UserContact />
-      <UserFooter />
+      <UserContent
+        userOrders={userOrders}
+        setUserData={setUserData}
+        setUserOrders={setUserOrders}
+        userData={userData}
+        language={language}
+      />
+      <UserAbout language={language} />
+      <UserContact language={language} />
+      <UserFooter language={language} />
     </div>
   );
 };

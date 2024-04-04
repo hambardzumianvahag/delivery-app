@@ -1,4 +1,3 @@
-import React from "react";
 import {
   Modal,
   Table,
@@ -8,51 +7,17 @@ import {
   TableHead,
   TableRow,
 } from "@mui/material";
-import styles from "./UserOrderHistory.module.css";
-import { db } from "../../../firebase/firebase-config";
-import {
-  collection,
-  doc,
-  getDocs,
-  query,
-  updateDoc,
-  where,
-} from "@firebase/firestore";
+import React from "react";
+import styles from "./CourierOrdersHistory.module.css";
 
-const UserOrderHistory = ({
-  setUserOrders,
-  userOrders,
-  isOpen,
+const CourierOrdersHistory = ({
+  openModal,
   onClose,
+  pendingOrders,
   language,
 }) => {
-  const handleCancelOrder = async (orderId) => {
-    try {
-      // Update order status in the orders collection
-      const ordersCollection = collection(db, "orders");
-      const q = query(ordersCollection, where("orderId", "==", orderId));
-      const querySnapshot = await getDocs(q);
-
-      querySnapshot.forEach(async (elem) => {
-        // Update the status of the order to "Cancelled"
-        const orderRef = doc(db, "orders", elem.id);
-        await updateDoc(orderRef, {
-          status: "Cancelled",
-        });
-
-        // Update userOrders
-        const updatedUserOrders = userOrders.map((order) =>
-          order.orderId === orderId ? { ...order, status: "Cancelled" } : order
-        );
-        setUserOrders(updatedUserOrders);
-      });
-    } catch (error) {
-      console.error("Error cancelling order:", error);
-    }
-  };
-
   return (
-    <Modal open={isOpen} onClose={onClose}>
+    <Modal open={openModal} onClose={onClose}>
       <div className={styles.modalContainer}>
         <div className={styles.modalContent}>
           <h1 className={styles.title}>
@@ -97,7 +62,7 @@ const UserOrderHistory = ({
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {userOrders?.map((order) => (
+                  {pendingOrders?.map((order) => (
                     <TableRow key={order.orderId}>
                       <TableCell>{order.orderId}</TableCell>
                       <TableCell>{order.orderName}</TableCell>
@@ -107,30 +72,7 @@ const UserOrderHistory = ({
                       <TableCell>{order.total}</TableCell>
                       <TableCell>{order.additionalInfo}</TableCell>
 
-                      <TableCell>
-                        {order.status === "Pending" ? (
-                          <button
-                            className={styles.cancelOrder}
-                            onClick={() => handleCancelOrder(order.orderId)}
-                          >
-                            {language === "English" ? "Cancel" : "Չեղարկել"}
-                          </button>
-                        ) : (
-                          <span className={styles.status}>
-                            {language === "English" &&
-                            order.status === "Cancelled"
-                              ? order.status
-                              : order.status === "Cancelled" &&
-                                language === "Armenian"
-                              ? "Չեղարկված"
-                              : order.status === "In Process" &&
-                                language === "English"
-                              ? order.status
-                              : "Ընթացքի մեջ"}
-                          </span>
-                          //! STEX PAYMAN STATUSI HET KAPVAC
-                        )}
-                      </TableCell>
+                      <TableCell>{order.status}</TableCell>
                     </TableRow>
                   ))}
                 </TableBody>
@@ -143,4 +85,4 @@ const UserOrderHistory = ({
   );
 };
 
-export default UserOrderHistory;
+export default CourierOrdersHistory;

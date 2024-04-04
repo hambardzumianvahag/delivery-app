@@ -12,22 +12,23 @@ import {
   Input,
   Text,
   SkeletonText,
+  Select,
 } from "@chakra-ui/react";
 import { db } from "../../../firebase/firebase-config";
-import {
-  addDoc,
-  collection,
-  doc,
-  getDoc,
-  getDocs,
-  updateDoc,
-} from "@firebase/firestore";
+import { addDoc, collection, getDocs, updateDoc } from "@firebase/firestore";
 import { useLocation } from "react-router";
 import { Autocomplete, useJsApiLoader } from "@react-google-maps/api";
 
 const libraries = ["places"];
 
-const UserOrderModal = ({ isOpen, onClose, setUserData, userData }) => {
+const UserOrderModal = ({
+  isOpen,
+  onClose,
+  userOrders,
+  userData,
+  language,
+  setUserOrders,
+}) => {
   const [error, setError] = useState("");
   const location = useLocation();
   const locationPath = location.pathname.split("/");
@@ -38,13 +39,14 @@ const UserOrderModal = ({ isOpen, onClose, setUserData, userData }) => {
     orderName: "",
     from: "",
     to: "",
+    courierId: "",
     additionalInfo: "",
     status: "Pending",
     distance: "",
     duration: "",
     total: "",
+    vehicleType: "",
   });
-
   const { isLoaded } = useJsApiLoader({
     googleMapsApiKey: "AIzaSyAPHw8Db5Ux9sMohE1FBZZmntxl_cdCDOQ",
     libraries: libraries,
@@ -171,6 +173,7 @@ const UserOrderModal = ({ isOpen, onClose, setUserData, userData }) => {
       setError("To Address is too long");
       return false;
     }
+    //
     if (!orderData.distance) {
       setError("Please Enter valid addresses");
       return false;
@@ -186,27 +189,14 @@ const UserOrderModal = ({ isOpen, onClose, setUserData, userData }) => {
     try {
       const orderRef = await addDoc(collection(db, "orders"), orderData);
       const oId = orderRef.id;
+
       await updateDoc(orderRef, { oId });
 
-      const userDocRef = doc(db, "users", userId);
-      const userDocSnap = await getDoc(userDocRef);
-      if (userDocSnap.exists()) {
-        const userData = userDocSnap.data();
-        const updatedOrders = [
-          ...(userData.orders || []),
-          { ...orderData, oId },
-        ];
-        await updateDoc(userDocRef, { orders: updatedOrders });
-        const updatedUserDocSnap = await getDoc(userDocRef);
-        if (updatedUserDocSnap.exists()) {
-          const updatedUserData = updatedUserDocSnap.data();
+      const updatedOrders = [...userOrders, { ...orderData, oId }];
+      setUserOrders(updatedOrders);
 
-          setUserData(updatedUserData);
-        }
-      } else {
-        console.error("User document does not exist");
-      }
       onClose();
+
       const ordersRef = collection(db, "orders");
       const ordersSnapshot = await getDocs(ordersRef);
       const count = ordersSnapshot.size + 1;
@@ -221,6 +211,7 @@ const UserOrderModal = ({ isOpen, onClose, setUserData, userData }) => {
         distance: "",
         duration: "",
         total: "",
+        vehicleType: "",
         status: "Pending",
       });
     } catch (error) {
@@ -248,15 +239,22 @@ const UserOrderModal = ({ isOpen, onClose, setUserData, userData }) => {
       <div className={styles.modalContainer}>
         <ModalContent className={styles.modalContent}>
           <ModalHeader className={styles.header}>
-            Order Number {orderData.orderId}
+            {language === "English" ? "Order Number " : "Պատվեր "}
+            {orderData.orderId}
           </ModalHeader>
           <ModalBody padding="10px" fontSize="16px">
             {error && <span className={styles.error}>{error}</span>}
             <div className={styles.orderContainer}>
-              <p>Order Name: </p>
+              <p>
+                {language === "English" ? "Order Name: " : "Պատվերի Անուն։ "}
+              </p>
               <Input
                 name="orderName"
-                placeholder="Enter the name of this order..."
+                placeholder={
+                  language === "English"
+                    ? "Enter the name of this order..."
+                    : "Մուտքագրեք պատվերի անունը..."
+                }
                 value={orderData.orderName}
                 onChange={handleChange}
                 className={styles.textField}
@@ -264,7 +262,7 @@ const UserOrderModal = ({ isOpen, onClose, setUserData, userData }) => {
             </div>
             <div className={styles.orderContainer}>
               <p>
-                From:
+                {language === "English" ? "From: " : "Որտեղի՞ց։ "}
                 {userData?.mainAddress &&
                 !orderData.from &&
                 orderData.to !== userData?.mainAddress ? (
@@ -272,7 +270,9 @@ const UserOrderModal = ({ isOpen, onClose, setUserData, userData }) => {
                     onClick={handleUseMainAddressforFrom}
                     className={styles.mainAddress}
                   >
-                    Use Main Address
+                    {language === "English"
+                      ? "Use Main Address"
+                      : "Օգտագործել հիմնական հասցեն"}
                   </span>
                 ) : null}
               </p>
@@ -284,13 +284,17 @@ const UserOrderModal = ({ isOpen, onClose, setUserData, userData }) => {
                   variant="outline"
                   ref={originRef}
                   className={styles.textField}
-                  placeholder="Enter starting address (e.g., Street Name, City, Country)"
+                  placeholder={
+                    language === "English"
+                      ? "Enter starting address (e.g., Street Name, City, Country)"
+                      : "Մուտքագրեք  հասցեն (օրինակ՝ փողոցի անունը, քաղաքը, երկիրը)"
+                  }
                 />
               </Autocomplete>
             </div>
             <div className={styles.orderContainer}>
               <p>
-                To:
+                {language === "English" ? "To: " : "Որտե՞ղ։ "}
                 {userData?.mainAddress &&
                 !orderData.to &&
                 orderData.from !== userData?.mainAddress ? (
@@ -298,7 +302,9 @@ const UserOrderModal = ({ isOpen, onClose, setUserData, userData }) => {
                     onClick={handleUseMainAddressforTo}
                     className={styles.mainAddress}
                   >
-                    Use Main Address
+                    {language === "English"
+                      ? "Use Main Address"
+                      : "Օգտագործել հիմնական հասցեն"}
                   </span>
                 ) : null}{" "}
               </p>
@@ -310,14 +316,49 @@ const UserOrderModal = ({ isOpen, onClose, setUserData, userData }) => {
                   onChange={handleChange}
                   variant="outline"
                   className={styles.textField}
-                  placeholder="Enter starting address (e.g., Street Name, City, Country)"
+                  placeholder={
+                    language === "English"
+                      ? "Enter starting address (e.g., Street Name, City, Country)"
+                      : "Մուտքագրեք  հասցեն (օրինակ՝ փողոցի անունը, քաղաքը, երկիրը)"
+                  }
                 />
               </Autocomplete>
             </div>
+            <div className={styles.vehicleType}>
+              <p>
+                {language === "English"
+                  ? "Preferred Vehicle Type: "
+                  : "Նախընտրելի Մեքենայի Տեսակը։ "}
+              </p>
+              <Select
+                name="vehicleType"
+                value={orderData.vehicleType}
+                onChange={handleChange}
+                className={styles.selectField}
+              >
+                <option value="sedan">
+                  {language === "English" ? "Sedan" : "Սեդան"}
+                </option>
+                <option value="jeep">
+                  {language === "English" ? "Jeep" : "Ջիպ"}
+                </option>
+                <option value="truck">
+                  {language === "English" ? "Truck" : "Բեռնատար"}
+                </option>
+              </Select>
+            </div>
             <div className={styles.additionalInfoContainer}>
-              <span>Additional Information</span>
+              <span>
+                {language === "English"
+                  ? "Additional Information"
+                  : "Հավելյալ Ինֆորմացիա"}
+              </span>
               <Textarea
-                placeholder="Any additional information about your order if it's needed?"
+                placeholder={
+                  language === "English"
+                    ? "Any additional information about your order if it's needed?"
+                    : "Ձեր պատվերի մասին լրացուցիչ տեղեկություններ կա՞ն, եթե դա անհրաժեշտ է:"
+                }
                 name="additionalInfo"
                 value={orderData.additionalInfo}
                 onChange={handleChange}
@@ -326,11 +367,31 @@ const UserOrderModal = ({ isOpen, onClose, setUserData, userData }) => {
             </div>
             {distance && duration && orderData.from && orderData.to ? (
               <div className={styles.orderSummary}>
-                <Text className={styles.summaryTitle}>Order Summary</Text>
-                <Text className={styles.distance}>Distance: {distance} </Text>
-                <Text className={styles.duration}>Duration: {duration} </Text>
+                <Text className={styles.summaryTitle}>
+                  {language === "English"
+                    ? "Order Summary"
+                    : "Պատվերի ամփոփում"}
+                </Text>
+                <Text className={styles.distance}>
+                  {" "}
+                  {language === "English"
+                    ? "Distance: "
+                    : "Հեռավորություն: "}{" "}
+                  {distance}{" "}
+                </Text>
+                <Text className={styles.duration}>
+                  {" "}
+                  {language === "English" ? "Duration: " : "Տևողություն: "}{" "}
+                  {duration}{" "}
+                </Text>
                 <Text className={styles.total}>
-                  Total: {300 + distance.slice(0, 3) * 100} AMD
+                  {language === "English" ? "Total: " : "Ընդհանուր։ "}:{" "}
+                  {orderData.vehicleType === "sedan"
+                    ? 300 + distance.slice(0, 3) * 150
+                    : orderData.vehicleType === "jeep"
+                    ? 300 + distance.slice(0, 3) * 200
+                    : 300 + distance.slice(0, 3) * 400}{" "}
+                  AMD
                 </Text>
               </div>
             ) : null}
@@ -341,7 +402,7 @@ const UserOrderModal = ({ isOpen, onClose, setUserData, userData }) => {
               colorScheme="red"
               className={styles.cancelButton}
             >
-              Cancel
+              {language === "English" ? "Cancel" : "Չեղարկել"}
             </Button>
             <Button
               onClick={handleConfirmOrder}
@@ -349,7 +410,7 @@ const UserOrderModal = ({ isOpen, onClose, setUserData, userData }) => {
               ml={3}
               className={styles.confirmButton}
             >
-              Confirm Order
+              {language === "English" ? "Confirm Order" : "Հաստատել պատվերը"}
             </Button>
           </ModalFooter>
         </ModalContent>
