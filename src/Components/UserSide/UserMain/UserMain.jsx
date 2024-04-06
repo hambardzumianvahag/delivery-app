@@ -7,12 +7,18 @@ import UserContent from "../UserContent/UserContent";
 import UserAbout from "../UserAbout/UserAbout";
 import UserContact from "../UserContact/UserContact";
 import UserFooter from "../UserFooter/UserFooter";
+import ContactSupportIcon from "@mui/icons-material/ContactSupport";
+import styles from "./UserMain.module.css";
 
 const UserMain = () => {
   const { userID } = useParams();
   const [userData, setUserData] = useState(null);
   const [userOrders, setUserOrders] = useState([]);
   const [language, setLanguage] = useState("English");
+
+  const handleClick = () => {
+    window.location.href = "tel:+37444470818"; // Replace this number with your desired phone number
+  };
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -73,6 +79,9 @@ const UserMain = () => {
         userData={userData}
         language={language}
       />
+      <div className={styles.support} onClick={handleClick}>
+        <ContactSupportIcon style={{ fontSize: "50" }} />
+      </div>
       <UserAbout language={language} />
       <UserContact language={language} />
       <UserFooter language={language} />

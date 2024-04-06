@@ -189,6 +189,7 @@ const UserHeader = ({
           </ul>
         </div>
       </div>
+
       <UserProfile
         userData={userData}
         isOpen={isProfileModalOpen}

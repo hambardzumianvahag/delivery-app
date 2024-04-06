@@ -74,6 +74,7 @@
 .burgerMenu {
   display: none !important;
 }
+
 @media screen and (max-width: 768px) {
   .userHeader ul {
     text-align: left;
