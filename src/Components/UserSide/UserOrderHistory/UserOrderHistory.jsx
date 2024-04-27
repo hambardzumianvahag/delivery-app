@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   Modal,
   Table,
@@ -18,6 +18,7 @@ import {
   updateDoc,
   where,
 } from "@firebase/firestore";
+import OrderDetails from "../OrderDetails/OrderDetails";
 
 const UserOrderHistory = ({
   setUserOrders,
@@ -26,21 +27,29 @@ const UserOrderHistory = ({
   onClose,
   language,
 }) => {
+  const [selectedOrder, setSelectedOrder] = useState(null);
+  const [open, setOpen] = React.useState(false);
+  const handleClose = () => setOpen(false);
+
+  const handleCloseModal = () => {
+    setSelectedOrder(null);
+  };
+
+  const handleSeeMore = (order) => {
+    setOpen(true);
+    setSelectedOrder(order);
+  };
+
   const handleCancelOrder = async (orderId) => {
     try {
-      // Update order status in the orders collection
       const ordersCollection = collection(db, "orders");
       const q = query(ordersCollection, where("orderId", "==", orderId));
       const querySnapshot = await getDocs(q);
-
       querySnapshot.forEach(async (elem) => {
-        // Update the status of the order to "Cancelled"
         const orderRef = doc(db, "orders", elem.id);
         await updateDoc(orderRef, {
           status: "Cancelled",
         });
-
-        // Update userOrders
         const updatedUserOrders = userOrders.map((order) =>
           order.orderId === orderId ? { ...order, status: "Cancelled" } : order
         );
@@ -52,94 +61,110 @@ const UserOrderHistory = ({
   };
 
   return (
-    <Modal open={isOpen} onClose={onClose}>
-      <div className={styles.modalContainer}>
-        <div className={styles.modalContent}>
-          <h1 className={styles.title}>
-            {language === "English"
-              ? "User Order History"
-              : "Պատվերների պատմություն"}
-          </h1>
-          <span className={styles.close} onClick={onClose}>
-            &#10005;
-          </span>
-          <div className={styles.tableWrapper}>
-            <TableContainer>
-              <Table className={styles.table}>
-                <TableHead>
-                  <TableRow>
-                    <TableCell className={styles.headerCell}>
-                      {language === "English" ? "ID" : "Համար"}
-                    </TableCell>
-                    <TableCell className={styles.headerCell}>
-                      {language === "English" ? "Name" : "Անուն"}
-                    </TableCell>
-                    <TableCell className={styles.headerCell}>
-                      {language === "English" ? "From" : "Որտեղից"}
-                    </TableCell>
-                    <TableCell className={styles.headerCell}>
-                      {language === "English" ? "To" : "Որտեղ"}
-                    </TableCell>
-                    <TableCell className={styles.headerCell}>
-                      {language === "English" ? "Distance" : "Հեռավորություն"}
-                    </TableCell>
-                    <TableCell className={styles.headerCell}>
-                      {language === "English" ? "Total" : "Ընդհանուր"}
-                    </TableCell>
-                    <TableCell className={styles.headerCell}>
-                      {language === "English"
-                        ? "Additional info"
-                        : "Հավելյալ ինֆո"}
-                    </TableCell>
-                    <TableCell className={styles.headerCell}>
-                      {language === "English" ? "Status" : "Կարգավիճակ"}
-                    </TableCell>
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  {userOrders?.map((order) => (
-                    <TableRow key={order.orderId}>
-                      <TableCell>{order.orderId}</TableCell>
-                      <TableCell>{order.orderName}</TableCell>
-                      <TableCell>{order.from}</TableCell>
-                      <TableCell>{order.to}</TableCell>
-                      <TableCell>{order.distance}</TableCell>
-                      <TableCell>{order.total}</TableCell>
-                      <TableCell>{order.additionalInfo}</TableCell>
+    <>
+      <Modal open={isOpen} onClose={onClose}>
+        <div className={styles.modalContainer}>
+          <div className={styles.modalContent}>
+            <h1 className={styles.title}>
+              {language === "English"
+                ? "User Order History"
+                : "Պատվերների պատմություն"}
+            </h1>
+            <span className={styles.close} onClick={onClose}>
+              &#10005;
+            </span>
+            <div className={styles.tableWrapper}>
+              <TableContainer>
+                <Table className={styles.table}>
+                  <TableHead>
+                    <TableRow>
+                      <TableCell className={styles.headerCell}>
+                        {language === "English" ? "Name" : "Անուն"}
+                      </TableCell>
 
-                      <TableCell>
-                        {order.status === "Pending" ? (
-                          <button
-                            className={styles.cancelOrder}
-                            onClick={() => handleCancelOrder(order.orderId)}
-                          >
-                            {language === "English" ? "Cancel" : "Չեղարկել"}
-                          </button>
-                        ) : (
-                          <span className={styles.status}>
-                            {language === "English" &&
-                            order.status === "Cancelled"
-                              ? order.status
-                              : order.status === "Cancelled" &&
-                                language === "Armenian"
-                              ? "Չեղարկված"
-                              : order.status === "In Process" &&
-                                language === "English"
-                              ? order.status
-                              : "Ընթացքի մեջ"}
-                          </span>
-                          //! STEX PAYMAN STATUSI HET KAPVAC
-                        )}
+                      <TableCell className={styles.headerCell}>
+                        {language === "English" ? "Total" : "Ընդհանուր"}
+                      </TableCell>
+
+                      <TableCell className={styles.headerCell}>
+                        {language === "English" ? "Status" : "Կարգավիճակ"}
+                      </TableCell>
+                      <TableCell className={styles.headerCell}>
+                        {language === "English" ? "See More" : "Տեսնել ավելին"}
                       </TableCell>
                     </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </TableContainer>
+                  </TableHead>
+                  <TableBody>
+                    {userOrders?.map((order) => (
+                      <TableRow key={order.orderId}>
+                        <TableCell className={styles.name}>
+                          {order.orderName}
+                        </TableCell>
+                        <TableCell className={styles.total}>
+                          {order.total}
+                        </TableCell>
+                        <TableCell className={styles.status}>
+                          {order.status === "Pending" ? (
+                            <button
+                              className={styles.cancelOrder}
+                              onClick={() => handleCancelOrder(order.orderId)}
+                            >
+                              {language === "English" ? "Cancel" : "Չեղարկել"}
+                            </button>
+                          ) : (
+                            <span className={styles.status}>
+                              {language === "English" &&
+                              order.status === "Cancelled"
+                                ? "Cancelled"
+                                : order.status === "Cancelled" &&
+                                  language === "Armenian"
+                                ? "Չեղարկված"
+                                : order.status === "In Process" &&
+                                  language === "English"
+                                ? "In Process"
+                                : order.status === "In Process" &&
+                                  language === "Armenian"
+                                ? "Ընթացքի Մեջ"
+                                : language === "English" &&
+                                  order.status === "Finalizing"
+                                ? "Finalizing"
+                                : language === "Armenian" &&
+                                  order.status === "Finalizing"
+                                ? "Մոտենում է Ավարտին"
+                                : language === "English" &&
+                                  order.status === "Completed"
+                                ? "Completed"
+                                : "Ավարտված"}
+                            </span>
+                          )}
+                        </TableCell>
+                        <TableCell>
+                          <button
+                            className={styles.seeMore}
+                            onClick={() => handleSeeMore(order)}
+                          >
+                            {language === "English" ? "See More" : "Ավելին"}
+                          </button>
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </TableContainer>
+            </div>
           </div>
+          {selectedOrder && (
+            <OrderDetails
+              orderDetails={selectedOrder}
+              onClose={handleCloseModal}
+              open={open}
+              language={language}
+              handleClose={handleClose}
+            />
+          )}
         </div>
-      </div>
-    </Modal>
+      </Modal>
+    </>
   );
 };
 

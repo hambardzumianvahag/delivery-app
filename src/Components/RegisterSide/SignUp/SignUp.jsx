@@ -47,7 +47,6 @@ const SignUp = () => {
     const regexLowercase = /[a-z]/;
     const regexDigit = /[0-9]/;
     const regexSpecial = /[!@#$%^&*()_+\-=\[\]{}|:;"',.<>/?]/;
-
     if (!name) {
       setError("Name is required");
       return false;
@@ -129,6 +128,7 @@ const SignUp = () => {
           surname: surname,
           position: position,
           email: email,
+          balance: 0,
           id: userId,
         });
       }

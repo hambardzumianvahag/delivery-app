@@ -39,13 +39,15 @@ const UserOrderModal = ({
     orderName: "",
     from: "",
     to: "",
+    date: "",
+    time: "",
     courierId: "",
     additionalInfo: "",
     status: "Pending",
     distance: "",
     duration: "",
     total: "",
-    vehicleType: "",
+    vehicleType: "Sedan",
   });
   const { isLoaded } = useJsApiLoader({
     googleMapsApiKey: "AIzaSyAPHw8Db5Ux9sMohE1FBZZmntxl_cdCDOQ",
@@ -77,9 +79,39 @@ const UserOrderModal = ({
     fetchOrdersCount();
   }, [isLoaded, orderData.from, orderData.to]);
 
+  useEffect(() => {
+    // Recalculate total when vehicleType changes
+    const calculateTotal = () => {
+      if (distance !== "" && orderData.vehicleType !== "") {
+        const distanceValue = parseFloat(distance.replace(",", "."));
+        let total = 0;
+        switch (orderData.vehicleType) {
+          case "Sedan":
+            total = 300 + distanceValue * 150;
+            break;
+          case "Jeep":
+            total = 300 + distanceValue * 200;
+            break;
+          case "Truck":
+            total = 300 + distanceValue * 400;
+            break;
+          default:
+            total = 0;
+            break;
+        }
+        setOrderData((prevData) => ({
+          ...prevData,
+          total: `${total} AMD`,
+        }));
+      }
+    };
+    calculateTotal();
+  }, [distance, orderData.vehicleType]);
+
   if (!isLoaded) {
     return <SkeletonText />;
   }
+
   async function calculateRoute() {
     if (originRef.current.value === "" || destinationRef.current.value === "") {
       setDistance("");
@@ -92,7 +124,6 @@ const UserOrderModal = ({
       }));
       return;
     }
-
     try {
       // eslint-disable-next-line no-undef
       const directionsService = new google.maps.DirectionsService();
@@ -106,7 +137,22 @@ const UserOrderModal = ({
       if (results.status === "OK") {
         const calculatedDistance = results.routes[0].legs[0].distance.text;
         const calculatedDuration = results.routes[0].legs[0].duration.text;
-        const total = 300 + parseFloat(calculatedDistance.slice(0, 3)) * 100;
+        const distanceValue = parseFloat(calculatedDistance.replace(",", "."));
+        let total = 0;
+        switch (orderData.vehicleType) {
+          case "Sedan":
+            total = 300 + distanceValue * 150;
+            break;
+          case "Jeep":
+            total = 300 + distanceValue * 200;
+            break;
+          case "Truck":
+            total = 300 + distanceValue * 400;
+            break;
+          default:
+            total = 0;
+            break;
+        }
         setDistance(calculatedDistance);
         setDuration(calculatedDuration);
         setOrderData((prevData) => ({
@@ -116,7 +162,6 @@ const UserOrderModal = ({
           total: `${total} AMD`,
         }));
       } else {
-        // Handle the case where directions cannot be found
         console.error("Directions not found:", results.status);
         setDistance("");
         setDuration("");
@@ -187,12 +232,25 @@ const UserOrderModal = ({
       return;
     }
     try {
-      const orderRef = await addDoc(collection(db, "orders"), orderData);
+      const currentDateTime = new Date();
+      const currentDate = currentDateTime.toLocaleDateString();
+      const currentTime = currentDateTime.toLocaleTimeString([], {
+        hour12: false,
+      });
+
+      const updatedOrderData = {
+        ...orderData,
+        date: currentDate,
+        time: currentTime,
+      };
+      setOrderData(updatedOrderData);
+
+      const orderRef = await addDoc(collection(db, "orders"), updatedOrderData);
       const oId = orderRef.id;
 
       await updateDoc(orderRef, { oId });
 
-      const updatedOrders = [...userOrders, { ...orderData, oId }];
+      const updatedOrders = [...userOrders, { ...updatedOrderData, oId }];
       setUserOrders(updatedOrders);
 
       onClose();
@@ -211,7 +269,7 @@ const UserOrderModal = ({
         distance: "",
         duration: "",
         total: "",
-        vehicleType: "",
+        vehicleType: "Sedan",
         status: "Pending",
       });
     } catch (error) {
@@ -232,7 +290,6 @@ const UserOrderModal = ({
       to: userData?.mainAddress,
     }));
   };
-
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
       <ModalOverlay />
@@ -336,13 +393,13 @@ const UserOrderModal = ({
                 onChange={handleChange}
                 className={styles.selectField}
               >
-                <option value="sedan">
+                <option value="Sedan">
                   {language === "English" ? "Sedan" : "Սեդան"}
                 </option>
-                <option value="jeep">
+                <option value="Jeep">
                   {language === "English" ? "Jeep" : "Ջիպ"}
                 </option>
-                <option value="truck">
+                <option value="Truck">
                   {language === "English" ? "Truck" : "Բեռնատար"}
                 </option>
               </Select>
@@ -385,13 +442,30 @@ const UserOrderModal = ({
                   {duration}{" "}
                 </Text>
                 <Text className={styles.total}>
-                  {language === "English" ? "Total: " : "Ընդհանուր։ "}:{" "}
-                  {orderData.vehicleType === "sedan"
-                    ? 300 + distance.slice(0, 3) * 150
-                    : orderData.vehicleType === "jeep"
-                    ? 300 + distance.slice(0, 3) * 200
-                    : 300 + distance.slice(0, 3) * 400}{" "}
-                  AMD
+                  {language === "English" ? "Total: " : "Ընդհանուր։ "}{" "}
+                  {orderData.distance && orderData.vehicleType
+                    ? (() => {
+                        const distanceValue = parseFloat(
+                          orderData.distance.replace(",", ".")
+                        );
+                        let total = 0;
+                        switch (orderData.vehicleType) {
+                          case "Sedan":
+                            total = 300 + distanceValue * 150;
+                            break;
+                          case "Jeep":
+                            total = 300 + distanceValue * 200;
+                            break;
+                          case "Truck":
+                            total = 300 + distanceValue * 400;
+                            break;
+                          default:
+                            total = 0;
+                            break;
+                        }
+                        return `${total} AMD`;
+                      })()
+                    : null}
                 </Text>
               </div>
             ) : null}

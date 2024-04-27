@@ -45,6 +45,7 @@
 .headerCell {
   background-color: #f2f2f2;
   font-weight: bold;
+  font-size: 25px;
   padding: 10px;
   white-space: nowrap; /* Prevent text wrapping */
   overflow: hidden; /* Hide overflow if needed */
@@ -88,14 +89,43 @@
   background-color: rgb(146, 27, 27);
 }
 .headerCell {
+  font-weight: bolder;
   display: flex;
   justify-content: center;
+  margin: 0 auto;
+  text-align: center !important;
   align-items: center;
+}
+.total,
+.name,
+.distance,
+.to,
+.from,
+.status {
+  display: flex;
+  margin: 0 auto;
+  justify-content: center;
+  text-align: center !important;
 }
 .status {
   display: flex;
   justify-content: center;
   align-items: center;
+}
+.seeMore {
+  background-color: #fdc72d;
+  color: #fff;
+  border: none;
+  display: flex;
+  margin: 0 auto;
+  border-radius: 4px;
+  padding: 8px 16px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.seeMore:hover {
+  background-color: #967827;
 }
 /* Adjustments for smaller screens */
 @media screen and (max-width: 780) {

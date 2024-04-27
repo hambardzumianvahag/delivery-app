@@ -10,7 +10,7 @@ const CourierProfile = ({
   language,
   courierData,
   setCourierData,
-  pendingOrders,
+  courierOrders,
 }) => {
   const [openProfileModal, setOpenProfileModal] = useState(false);
   const [openOrdersModal, setOpenOrdersModal] = useState(false);
@@ -58,7 +58,7 @@ const CourierProfile = ({
         openModal={openOrdersModal}
         onClose={handleCloseOrdersModal}
         language={language}
-        pendingOrders={pendingOrders}
+        courierOrders={courierOrders}
       />
     </div>
   );

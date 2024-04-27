@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import {
   collection,
   getDocs,
@@ -10,12 +10,31 @@ import {
 import { db } from "../../../firebase/firebase-config";
 import styles from "./PendingOrders.module.css";
 import { useLocation } from "react-router";
+import OrderDetails from "../OrderDetails/OrderDetails";
 
-const PendingOrders = ({ language, setCourierOrders }) => {
-  const [pendingOrders, setPendingOrders] = useState([]);
+const PendingOrders = ({
+  setProcessingOrders,
+  pendingOrders,
+  setPendingOrders,
+  language,
+  setCourierOrders,
+}) => {
   const location = useLocation();
   const locationPath = location.pathname.split("/");
   const courierId = locationPath[locationPath.length - 1];
+
+  const [selectedOrder, setSelectedOrder] = useState(null);
+  const [open, setOpen] = useState(false);
+  const handleClose = () => setOpen(false);
+
+  const handleCloseModal = () => {
+    setSelectedOrder(null);
+  };
+
+  const handleSeeMore = (order) => {
+    setOpen(true);
+    setSelectedOrder(order);
+  };
 
   const fetchPendingOrders = async () => {
     try {
@@ -36,7 +55,7 @@ const PendingOrders = ({ language, setCourierOrders }) => {
     fetchPendingOrders();
   }, []);
 
-  const handleAcceptOrder = async (orderId) => {
+  const handleAcceptOrder = async (orderId, courierId) => {
     try {
       const orderRef = doc(db, "orders", orderId);
       await updateDoc(orderRef, {
@@ -44,14 +63,20 @@ const PendingOrders = ({ language, setCourierOrders }) => {
         courierId: courierId,
       });
 
-      const updatedOrders = pendingOrders.filter(
-        (order) => order.id !== orderId
-      );
-      setPendingOrders(updatedOrders);
-      const acceptedOrder = pendingOrders.find((order) => order.id === orderId);
-      acceptedOrder.status = "In Process";
-      // Add the accepted order to courierOrders
-      setCourierOrders((prevOrders) => [...prevOrders, acceptedOrder]);
+      if (pendingOrders) {
+        const updatedOrders = pendingOrders.filter(
+          (order) => order.oId !== orderId
+        );
+        setPendingOrders(updatedOrders);
+        const acceptedOrder = pendingOrders.find(
+          (order) => order.oId === orderId
+        );
+        if (acceptedOrder) {
+          acceptedOrder.status = "In Process";
+          setCourierOrders((prevOrders) => [...prevOrders, acceptedOrder]);
+          setProcessingOrders((prevOrders) => [...prevOrders, acceptedOrder]);
+        }
+      }
     } catch (error) {
       console.error("Error accepting order: ", error);
     }
@@ -65,14 +90,12 @@ const PendingOrders = ({ language, setCourierOrders }) => {
       <table>
         <thead>
           <tr>
-            <th>{language === "English" ? "Order ID" : "Համար"}</th>
             <th>{language === "English" ? "Order Name" : "Անուն"}</th>
             <th>{language === "English" ? "From" : "Որտեղից"}</th>
             <th>{language === "English" ? "To" : "Որտեղ"}</th>
-            <th>
-              {language === "English" ? "Addition Info" : "Ավել Ինֆորմացիա"}
-            </th>
-            <th>{language === "English" ? "Status" : "Կարգավիճակ"}</th>
+            <th>{language === "English" ? "Distance" : "Հեռավորություն"}</th>
+            <th>{language === "English" ? "Cost" : "արժեք"}</th>
+            <th>{language === "English" ? "See More" : "Տեսնել Ավելին"}</th>
             <th>{language === "English" ? "Action" : "Գործողություն"}</th>
           </tr>
         </thead>
@@ -80,16 +103,23 @@ const PendingOrders = ({ language, setCourierOrders }) => {
           {pendingOrders.map(
             (order) =>
               order.status === "Pending" && (
-                <tr key={order.id}>
-                  <td>{order.orderId}</td>
+                <tr key={order.oId}>
                   <td>{order.orderName}</td>
                   <td>{order.from}</td>
                   <td>{order.to}</td>
-                  <td>{order.additionalInfo}</td>
-                  <td>{order.status}</td>
+                  <td>{order.distance}</td>
+                  <td>{order.total}</td>
                   <td>
                     <button
-                      onClick={() => handleAcceptOrder(order.id, order.userId)}
+                      className={styles.seeMore}
+                      onClick={() => handleSeeMore(order)}
+                    >
+                      {language === "English" ? "See More" : "Ավելին"}
+                    </button>
+                  </td>
+                  <td>
+                    <button
+                      onClick={() => handleAcceptOrder(order.oId, courierId)}
                     >
                       Accept
                     </button>
@@ -99,6 +129,15 @@ const PendingOrders = ({ language, setCourierOrders }) => {
           )}
         </tbody>
       </table>
+      {selectedOrder && (
+        <OrderDetails
+          orderDetails={selectedOrder}
+          onClose={handleCloseModal}
+          open={open}
+          language={language}
+          handleClose={handleClose}
+        />
+      )}
     </div>
   );
 };

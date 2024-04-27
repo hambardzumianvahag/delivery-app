@@ -9,7 +9,7 @@ import { useNavigate } from "react-router";
 const CourierHeader = ({
   setCourierData,
   courierData,
-  pendingOrders,
+  courierOrders,
   language,
   setLanguage,
 }) => {
@@ -39,6 +39,13 @@ const CourierHeader = ({
           </Select>
         </li>
         <li>
+          <h4>
+            {language === "English"
+              ? `Balance: ${courierData?.balance} AMD`
+              : `Մնացորդ։ ${courierData?.balance} դրամ`}
+          </h4>
+        </li>
+        <li>
           <AccountCircleIcon style={{ fontSize: 30 }} onClick={handleClick} />
         </li>
         <li>
@@ -51,7 +58,7 @@ const CourierHeader = ({
       <CourierProfile
         courierData={courierData}
         setCourierData={setCourierData}
-        pendingOrders={pendingOrders}
+        courierOrders={courierOrders}
         handleClose={handleClose}
         open={open}
         language={language}

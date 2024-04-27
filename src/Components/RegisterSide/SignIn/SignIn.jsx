@@ -70,7 +70,6 @@ const SignIn = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     const { email, password } = formData;
-
     try {
       await signInWithEmailAndPassword(auth, email, password).then(
         (userCredentials) => {

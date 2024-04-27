@@ -18,3 +18,17 @@
 .languageSelect {
   background-color: white;
 }
+@media only screen and (max-width: 768px) {
+  .courierHeader ul {
+    flex-direction: row;
+    gap: 10px;
+  }
+
+  .courierHeader ul li {
+    margin: 5px 0;
+  }
+
+  .languageSelect {
+    width: 100%; /* Full width for the language select */
+  }
+}

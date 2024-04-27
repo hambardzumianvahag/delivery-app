@@ -49,6 +49,6 @@ tr:hover {
 
 @media only screen and (max-width: 768px) {
   .container table {
-    overflow-x: auto;
+    overflow-x: auto; /* Add horizontal scrolling for small screens */
   }
 }
