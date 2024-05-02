@@ -80,7 +80,6 @@ const UserOrderModal = ({
   }, [isLoaded, orderData.from, orderData.to]);
 
   useEffect(() => {
-    // Recalculate total when vehicleType changes
     const calculateTotal = () => {
       if (distance !== "" && orderData.vehicleType !== "") {
         const distanceValue = parseFloat(distance.replace(",", "."));
@@ -222,7 +221,7 @@ const UserOrderModal = ({
     if (!orderData.distance) {
       setError("Please Enter valid addresses");
       return false;
-    } //! stugelu entaka
+    }
     setError("");
     return true;
   };

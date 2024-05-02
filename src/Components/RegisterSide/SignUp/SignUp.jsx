@@ -108,10 +108,8 @@ const SignUp = () => {
     position
   ) => {
     try {
-      // Reference to the "users" collection
       if (formData.position === "User") {
         const usersRef = doc(db, "users", userId);
-        // Set user data in the "users" collection
         await setDoc(usersRef, {
           name: name,
           surname: surname,
@@ -120,9 +118,7 @@ const SignUp = () => {
           id: userId,
         });
       } else {
-        // Reference to the "Couriers" collection
         const couriersRef = doc(db, "couriers", userId);
-        // Set courier data in the "Couriers" collection
         await setDoc(couriersRef, {
           name: name,
           surname: surname,

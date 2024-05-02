@@ -2,7 +2,7 @@
   font-family: Arial, sans-serif;
   background-color: white;
   margin: 20px;
-  overflow-x: auto; /* Add horizontal scrolling for small screens */
+  overflow-x: auto;
 }
 
 .title {
@@ -14,7 +14,7 @@ table {
   width: 100%;
   border-collapse: collapse;
   border: 1px solid #ddd;
-  white-space: nowrap; /* Prevent line breaks in table cells */
+  white-space: nowrap;
 }
 
 th,
@@ -49,6 +49,6 @@ tr:hover {
 
 @media only screen and (max-width: 768px) {
   .container table {
-    overflow-x: auto; /* Add horizontal scrolling for small screens */
+    overflow-x: auto;
   }
 }

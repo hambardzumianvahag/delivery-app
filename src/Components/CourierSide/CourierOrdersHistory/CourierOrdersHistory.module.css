@@ -36,10 +36,10 @@
 }
 
 .table {
-  width: 100%; /* Table takes full width */
+  width: 100%; 
   border-collapse: collapse;
   margin-top: 20px;
-  table-layout: fixed; /* Let the table adjust based on available width */
+  table-layout: fixed;
 }
 
 .headerCell {
@@ -47,9 +47,9 @@
   font-weight: bold;
   font-size: 25px;
   padding: 10px;
-  white-space: nowrap; /* Prevent text wrapping */
-  overflow: hidden; /* Hide overflow if needed */
-  text-overflow: ellipsis; /* Add ellipsis for long text */
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .table td,
@@ -68,8 +68,8 @@
 }
 
 .tableWrapper {
-  max-height: 400px; /* Change height to max-height for better responsiveness */
-  overflow-y: auto; /* Enable vertical scrolling */
+  max-height: 400px;
+  overflow-y: auto;
 }
 
 .cancelOrder {
@@ -81,8 +81,8 @@
   font-size: 16px;
   display: flex;
   margin: 0 auto;
-  max-width: 100%; /* Ensure button doesn't exceed container width */
-  box-sizing: border-box; /* Include padding and border in width */
+  max-width: 100%;
+  box-sizing: border-box;
 }
 
 .cancelOrder:hover {
@@ -134,34 +134,34 @@
     margin: 0;
   }
   .modalContent {
-    padding: 5px; /* Reduce padding for smaller screens */
+    padding: 5px;
   }
 
   .title {
-    font-size: 10px; /* Decrease font size for the title */
+    font-size: 10px;
   }
 
   .close {
-    top: 2px; /* Adjust close button position */
-    font-size: 18px; /* Decrease font size for the close button */
+    top: 2px;
+    font-size: 18px;
   }
 
   .headerCell {
-    font-size: 8px; /* Decrease font size for header cells */
+    font-size: 8px;
   }
 
   .table td,
   .table th {
-    padding: 6px 4px; /* Reduce padding for table cells */
-    font-size: 8px; /* Decrease font size for table cells */
+    padding: 6px 4px;
+    font-size: 8px;
   }
 
   .cancelOrder {
     padding: 3px;
-    font-size: 8px; /* Decrease font size for cancel button */
+    font-size: 8px;
   }
 
   .status {
-    font-size: 8px; /* Decrease font size for status */
+    font-size: 8px;
   }
 }

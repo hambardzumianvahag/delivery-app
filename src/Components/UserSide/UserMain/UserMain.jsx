@@ -17,7 +17,7 @@ const UserMain = () => {
   const [language, setLanguage] = useState("English");
 
   const handleClick = () => {
-    window.location.href = "tel:+37444470818"; // Replace this number with your desired phone number
+    window.location.href = "tel:+37444470818"; 
   };
 
   useEffect(() => {

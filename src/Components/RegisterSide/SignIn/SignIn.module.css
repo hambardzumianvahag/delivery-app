@@ -43,10 +43,10 @@
 }
 @media (max-width: 768px) {
   .formContainer {
-    width: 80%; /* Adjust the width as needed */
+    width: 80%; 
     margin: 10px 0;
   }
   .inputField {
-    margin: 8px 0; /* Adjust the margin as needed */
+    margin: 8px 0;
   }
 }

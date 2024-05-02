@@ -32,11 +32,9 @@ const SignIn = () => {
       const usersCollection = collection(db, "users");
       const couriersCollection = collection(db, "couriers");
 
-      // Query the users collection
       const usersQuery = query(usersCollection, where("email", "==", email));
       const usersSnapshot = await getDocs(usersQuery);
 
-      // Query the couriers collection
       const couriersQuery = query(
         couriersCollection,
         where("email", "==", email)
@@ -45,17 +43,15 @@ const SignIn = () => {
 
       let userFound = false;
 
-      // Check if the email belongs to a user
       usersSnapshot.forEach((doc) => {
         userFound = true;
-        const userId = doc.id; // Assuming userID is stored as document ID in Firestore
+        const userId = doc.id; 
         navigate(`/delivery-app/user/${userId}`);
       });
 
-      // Check if the email belongs to a courier
       couriersSnapshot.forEach((doc) => {
         userFound = true;
-        const courierId = doc.id; // Assuming courierID is stored as document ID in Firestore
+        const courierId = doc.id; 
         navigate(`/delivery-app/courier/${courierId}`);
       });
 

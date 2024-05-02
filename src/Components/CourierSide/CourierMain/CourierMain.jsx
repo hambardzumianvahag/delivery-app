@@ -133,13 +133,11 @@ const CourierMain = () => {
         if (!ordersQuerySnapshot.empty) {
           const ordersData = ordersQuerySnapshot.docs.map((doc) => doc.data());
 
-          // Create a Set to store unique order IDs
           const uniqueOrderIds = new Set(
             courierOrders.map((order) => order.oId)
           );
 
           const newOrdersData = ordersData.filter((order) => {
-            // Check if the order ID is already in the uniqueOrderIds set
             if (!uniqueOrderIds.has(order.oId)) {
               // If it's not, add it to the set and return true
               uniqueOrderIds.add(order.oId);

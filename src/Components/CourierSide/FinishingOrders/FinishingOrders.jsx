@@ -60,7 +60,6 @@ const FinishingOrders = ({
       });
 
       if (totalCost) {
-        // Check if totalCost is defined
         const numericTotal = parseInt(totalCost.replace(/\D/g, ""), 10);
         console.log(numericTotal);
         const updatedBalance = courierData.balance + numericTotal;
